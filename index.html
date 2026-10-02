@@ -59,6 +59,29 @@ button.o{background:#2a2a2a;color:#fff;border:1px solid #666}button:disabled{opa
 .pick{display:flex;gap:2px;margin-top:3px;background:#2a2a2a;border-radius:18px;padding:2px 6px}.pick span{font-size:22px;padding:2px 4px}
 .sys{text-align:center;color:var(--amber);font-style:italic;font-size:13px;margin-bottom:6px}
 
+/* ---- final score screen (matches Android) ---- */
+.fin{flex:none;margin:auto 0;display:flex;flex-direction:column}
+.pod{display:flex;align-items:flex-end;gap:8px;margin-top:24px}
+.pc{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+.pc .cr{font-size:24px;line-height:1.1}
+.pc .nm{font-weight:700;font-size:14px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc .sc{color:var(--amber);font-weight:800;font-size:16px;margin-bottom:4px}
+.pc .bar{width:100%;height:0;border-radius:10px 10px 0 0;display:flex;justify-content:center;padding-top:6px;font-size:26px;transition:height .9s ease}
+.pc.go .bar{height:var(--h)}
+.rest,.awc{background:var(--panel);border-radius:14px;padding:8px 16px;margin-top:16px}
+.rr{display:flex;align-items:center;padding:6px 0;font-size:16px}
+.rr .rk{width:40px;color:#9e9e9e}
+.rr .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rr b{color:var(--amber)}
+.awt{margin-top:20px;font-size:14px;font-weight:800;color:var(--amber)}
+.awc{margin-top:8px;padding:6px 16px}
+.ar{display:flex;align-items:center;padding:8px 0}
+.ar .ic{width:40px;font-size:24px}
+.ar .tx{flex:1;min-width:0}
+.ar .tt{color:#9e9e9e;font-size:12px}
+.ar .pn{font-weight:700;font-size:16px}
+.ar .dt{color:var(--amber);font-weight:700;font-size:14px}
+ 
 /* ---- keyboard / viewport fixes ---- */
 body{overflow:hidden}
 .s{transform:translateY(var(--top,0px))}
@@ -132,11 +155,15 @@ body{overflow:hidden}
  <div id="scores" class="card"></div>
 </div>
 
-<div id="final" class="s" style="justify-content:center">
- <h1 style="font-size:26px">GAME OVER<b class="am" style="font-size:20px">FINAL SCORES</b></h1>
- <div class="card" id="fsc" style="font-size:18px"></div>
- <div id="fback" class="gr" style="text-align:center"></div>
- <button class="o" id="fleave">Back to menu</button>
+<div id="final" class="s" style="overflow-y:auto">
+ <div class="fin">
+  <h1 style="font-size:26px">GAME OVER<b class="am" style="font-size:20px">FINAL SCORES</b></h1>
+  <div class="pod" id="pod"></div>
+  <div id="fsc"></div>
+  <div id="faw"></div>
+  <div id="fback" class="gr" style="text-align:center;margin-top:24px;font-size:15px"></div>
+  <button class="o" id="fleave" style="background:none;border:0;color:#bbb;margin-top:8px">← Back to menu</button>
+ </div>
 </div>
 <canvas id="fw"></canvas>
 
@@ -223,13 +250,29 @@ socket.on('round_ended', d => {
   $('over').style.display='flex';
   const missed = d.word && !S.isDrawer && !S.guessed; beep(missed?SND.fail:SND.end); });
 socket.on('game_finished', d => {
-  S.scores=d.scores; const list=S.players.map(p=>[p.name,d.scores[p.id]??0,p.id]).sort((a,b)=>b[1]-a[1]); const top=list.length?list[0][1]:0;
-  const medals=['🥇','🥈','🥉']; hideOv();
-  $('fsc').innerHTML=list.map((r,i)=>`<div class="row pl"><span style="flex:none;width:40px">${medals[i]||'#'+(i+1)}</span><span style="text-align:left">${esc(r[0])}${r[1]===top&&top>0?' 👑':''}</span><b class="am" style="text-align:right;flex:none">${r[1]}</b></div>`).join('');
-  show('final'); const won=top>0&&(d.scores[pid]??-1)===top;
+  S.scores=d.scores;
+  const list=S.players.map(p=>({id:p.id,name:p.name,score:d.scores[p.id]??0})).sort((a,b)=>b.score-a.score);
+  const top=list.length?list[0].score:0; hideOv();
+  const MED=['🥇','🥈','🥉'], COL=['#ffc107','#b0bec5','#cd7f32'], HT=[130,100,80];
+
+  // podium order: 2nd, 1st, 3rd
+  $('pod').innerHTML=[1,0,2].map(i=>{ const r=list[i]; if(!r) return '<div class="pc"></div>';
+    return `<div class="pc">${r.score===top&&top>0?'<div class="cr">👑</div>':''}<div class="nm">${esc(r.name)}</div><div class="sc">${r.score}</div><div class="bar" style="background:${COL[i]};--h:${HT[i]}px">${MED[i]}</div></div>`; }).join('');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll('#pod .pc').forEach(e=>e.classList.add('go'))));
+
+  // everyone after 3rd place
+  const rest=list.slice(3);
+  $('fsc').innerHTML = rest.length ? `<div class="rest">${rest.map((r,i)=>`<div class="rr"><span class="rk">#${i+4}</span><span class="nm">${esc(r.name)}</span><b>${r.score}</b></div>`).join('')}</div>` : '';
+
+  // awards
+  const aw=d.awards||[];
+  $('faw').innerHTML = aw.length ? `<div class="awt">AWARDS</div><div class="awc">${aw.map(a=>`<div class="ar"><span class="ic">${esc(a.icon||'')}</span><div class="tx"><div class="tt">${esc(a.title||'')}</div><div class="pn">${esc(a.playerName||'')}</div></div><span class="dt">${esc(a.detail||'')}</span></div>`).join('')}</div>` : '';
+
+  show('final'); $('final').scrollTop=0;
+  const won=top>0&&(d.scores[pid]??-1)===top;
   if(won){ beep(SND.win); fireworks(); } else beep([[523,.12],[659,.12],[784,.12],[1047,.4]]);
-  let s=8; clearInterval(finalTimer); $('fback').textContent=`Back to lobby in ${s}s…`;
-  finalTimer=setInterval(()=>{ s--; $('fback').textContent=`Back to lobby in ${s}s…`; if(s<=0){ clearInterval(finalTimer); stopFw(); drawLobby(); show('lobby'); } },1000);
+  let s=15; clearInterval(finalTimer); $('fback').textContent=`Back to lobby in ${s}s...`;
+  finalTimer=setInterval(()=>{ s--; $('fback').textContent=`Back to lobby in ${s}s...`; if(s<=0){ clearInterval(finalTimer); stopFw(); drawLobby(); show('lobby'); } },1000);
 });
 
 // ---------- menu ----------
