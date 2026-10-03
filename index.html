@@ -101,7 +101,8 @@ body{overflow:hidden}
  <h1>GUESS THE<b class="am">DRAWING</b></h1>
  <p class="gr" style="text-align:center;margin:0">Draw • Guess • Win</p>
  <input id="name" maxlength="20" placeholder="Your name" autocomplete="off">
- <button id="create">CREATE ROOM</button>
+ <button id="play">PLAY</button>
+ <button id="create" class="o">CREATE ROOM</button>
  <button id="jopen" class="o">JOIN ROOM</button>
  <div class="err" id="merr"></div>
  <button id="snd" class="o" style="background:none;border:0;color:#999">🔊 Sound: ON</button>
@@ -202,7 +203,7 @@ socket.on('disconnect', () => { $('ban').textContent = S.room ? 'Connection lost
 socket.on('connect_error', () => { $('ban').textContent='Connecting to server…'; $('ban').style.display='block'; });
 socket.on('resync_none', () => { if(S.phase!=='menu'&&S.phase!=='joinscr'){ S.room=''; show('menu'); } });
 socket.on('resync', d => {
-  S.room=d.roomCode; S.players=d.players; S.scores=d.scores||{}; S.strokes=(d.strokes||[]).slice(); S.redo=[]; S.live=null;
+  S.room=d.roomCode; S.pub=!!d.isPublic; S.players=d.players; S.scores=d.scores||{}; S.strokes=(d.strokes||[]).slice(); S.redo=[]; S.live=null;
   S.drawer=d.drawerName; S.isDrawer=d.drawerId===pid; S.guessed=!!d.iGuessedCorrectly; S.vote=d.myVote||''; S.eggsLeft=d.eggsLeft||0; S.eggThrown=!!d.eggThrown;
   S.canSkip=!!d.canSkip; S.chat=(d.lobbyChat||[]).slice(); S.pickKey=''; drawChat();
   if(!d.gameActive){ drawLobby(); show('lobby'); return; }
@@ -211,7 +212,7 @@ socket.on('resync', d => {
   if(d.choosing) showChoose(d.words, 10); if(d.betweenRounds) $('over').style.display='flex';
   S.over=!!d.betweenRounds; S.choosing=!!d.choosing; updateUI(); redraw();
 });
-socket.on('room_updated', d => { S.room=d.roomCode; S.players=d.players; drawLobby(); drawScores(); });
+socket.on('room_updated', d => { S.room=d.roomCode; S.pub=!!d.isPublic; S.players=d.players; drawLobby(); drawScores(); });
 socket.on('score_update', d => { S.scores=d.scores; drawScores(); });
 socket.on('kicked', () => { S.room=''; show('menu'); alert('The host removed you from the room'); });
 socket.on('lobby_message', d => { S.chat.push(d); if(S.chat.length>200) S.chat.shift(); drawChat(); });
@@ -281,8 +282,9 @@ const q = new URLSearchParams(location.search).get('room'); if(q){ $('code').val
 $('code').oninput = e => e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
 function enter(ev, extra, nameEl, errEl){ const name=nameEl.value.trim(); if(!name){ errEl.textContent='Enter your name.'; return; }
   localStorage.name=name; errEl.textContent='';
-  socket.emit(ev, {playerName:name, ...extra}, r => { if(r&&r.success){ S.room=r.roomCode; S.players=r.players; S.chat=[]; S.pickKey=''; drawChat(); drawLobby(); show('lobby'); } else errEl.textContent=(r&&r.message)||'Could not connect.'; }); }
+  socket.emit(ev, {playerName:name, ...extra}, r => { if(r&&r.success){ S.room=r.roomCode; S.pub=!!r.isPublic; S.players=r.players; S.chat=[]; S.pickKey=''; drawChat(); drawLobby(); show('lobby'); } else errEl.textContent=(r&&r.message)||'Could not connect.'; }); }
 $('create').onclick = () => enter('create_room', {}, $('name'), $('merr'));
+$('play').onclick = () => enter('play_public', {}, $('name'), $('merr'));
 $('jopen').onclick = () => { $('name2').value=$('name').value; $('jerr').textContent=''; show('joinscr'); };
 $('jback').onclick = () => { $('name').value=$('name2').value; show('menu'); };
 $('join').onclick = () => { const c=$('code').value.trim(); if(c.length!==6){ $('jerr').textContent='Enter the 6-character room code.'; return; } enter('join_room', {roomCode:c}, $('name2'), $('jerr')); };
@@ -295,8 +297,8 @@ function drawLobby(){
   $('start').disabled = S.players.filter(p=>p.connected).length<2; }
 $('plist').onclick = e => { const el=e.target.closest('.pl'); const m=me(); if(!el||!m||!m.isHost||el.dataset.id===pid)return;
   const id=el.dataset.id, n=nameOf(id);
-  if(confirm(`Make ${n} the host?\n(Cancel for the kick option)`)) socket.emit('transfer_host',{playerId:id}); else if(confirm(`Kick ${n}?`)) socket.emit('kick_player',{playerId:id}); };
-// ---- chat bubbles + reactions (same wire format as the Android app, so both see each other's) ----
+  if(S.pub){ if(confirm(`Kick ${n}?`)) socket.emit('kick_player',{playerId:id}); return; }
+  if(confirm(`Make ${n} the host?\n(Cancel for the kick option)`)) socket.emit('transfer_host',{playerId:id}); else if(confirm(`Kick ${n}?`)) socket.emit('kick_player',{playerId:id}); };// ---- chat bubbles + reactions (same wire format as the Android app, so both see each other's) ----
 const REACT='⚑|', REPLY='↪|', EMOJIS=['👍','❤️','😂','😮','😢'];
 const NAMECOL=['#ff7043','#42a5f5','#66bb6a','#ab47bc','#ffca28','#26c6da','#ec407a','#9ccc65','#7e57c2','#ffa726'];
 const jhash=t=>{ let h=0; for(let i=0;i<t.length;i++) h=(Math.imul(31,h)+t.charCodeAt(i))|0; return h; };
