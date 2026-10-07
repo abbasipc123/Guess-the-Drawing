@@ -94,6 +94,54 @@ body{overflow:hidden}
 /* keyboard open: game shows only timer, hint/word and drawing */
 .kb #info,.kb #tools,.kb #log,.kb #scores{display:none!important}
 .kb #time{width:40px;height:34px;font-size:18px}
+
+/* ================= DESKTOP / WIDE SCREENS ONLY ================= */
+@media (min-width:900px) and (min-height:600px){
+  button,.dot,#rcode,.pl,.bb{cursor:pointer}
+  #cv{cursor:crosshair}
+
+  /* ---------- LOBBY: settings on the left, chat on the right ---------- */
+  #lobby{max-width:1100px;width:100%;overflow-y:auto}
+  #lobby.on{
+    display:grid;
+    grid-template-columns:380px 1fr;
+    grid-template-rows:auto auto auto 1fr auto auto;
+    gap:12px 20px;
+  }
+  #lhead{grid-column:1;grid-row:1}
+  #plist{grid-column:1;grid-row:2;max-height:35vh;overflow:auto}
+  #host,#wait{grid-column:1;grid-row:3}
+  #leave{grid-column:1;grid-row:6}
+  #chat{grid-column:2;grid-row:1 / 5}
+  #rbar{grid-column:2;grid-row:5}
+  #msg{grid-column:2;grid-row:6}
+
+  /* ---------- GAME: drawing on the left, chat on the right ---------- */
+  #game{max-width:1280px;width:100%}
+  #game.on{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 340px;
+    grid-template-rows:auto minmax(0,1fr) auto auto;
+    gap:10px 16px;
+  }
+  #top{grid-column:1;grid-row:1}
+  #cwrap{grid-column:1;grid-row:2}
+  #tools{grid-column:1;grid-row:3;flex-direction:row;align-items:center;gap:14px}
+  #log{grid-column:2;grid-row:1 / 3;height:auto;min-height:0;font-size:14px}
+  #guess{grid-column:2;grid-row:3}
+  #scores{grid-column:1 / -1;grid-row:4;white-space:normal;max-height:84px;overflow:auto;font-size:14px}
+
+  /* bigger hint, timer and tools */
+  #hint{font-size:26px}
+  #time{width:60px;height:60px;font-size:26px}
+  .pal{flex:1;flex-wrap:wrap;overflow:visible}
+  .dot{width:34px;height:34px}
+  .tb{width:340px}
+
+  /* ---------- FINAL SCREEN: a bit wider ---------- */
+  #final{max-width:720px}
+}
+ 
 </style></head><body>
 <div id="ban">Connecting to server…</div>
 
@@ -470,7 +518,8 @@ let baseH = 0;
 function vp(){
   const v = window.visualViewport, h = v ? v.height : innerHeight;
   if(h > baseH) baseH = h;
-  const kb = baseH - h > 120;                      // keyboard is open
+  const desktop = matchMedia('(min-width:900px) and (min-height:600px)').matches;
+const kb = !desktop && baseH - h > 120;          // keyboard is open (phones only)
   document.body.classList.toggle('kb', kb);
   const r = document.documentElement.style;
   r.setProperty('--vh', h + 'px');
