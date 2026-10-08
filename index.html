@@ -36,7 +36,7 @@ button.o{background:#2a2a2a;color:#fff;border:1px solid #666}button:disabled{opa
 #strip button{flex:none;width:44px;height:44px;padding:0;background:#2a2a2a;color:#fff;border:1px solid #666;border-radius:10px;font-size:22px;display:grid;place-items:center}
 #strip button.sel{border-color:var(--amber);border-width:2px}
 .tb{display:flex;gap:4px}.tb button{display:flex;align-items:center;justify-content:center}.tb button{flex:1;padding:9px 0;background:#2a2a2a;color:#fff;border:1px solid #666;font-size:17px}
-.tb button.sel{border-color:var(--amber);background:#ffc10733}
+.tb button.sel{border-color:var(--amber);background:color-mix(in srgb,var(--amber) 20%,transparent)}
 #react{position:absolute;top:6px;right:6px;display:none;gap:5px}
 #react button{padding:6px 10px;border-radius:20px;background:#212121e6;color:#fff;font-size:13px}
 .egg{position:absolute;width:100px;height:100px;transform:translate(-50%,-50%);pointer-events:none;animation:eggpop .18s ease-out,eggfade .5s 2.5s forwards}
@@ -45,7 +45,9 @@ button.o{background:#2a2a2a;color:#fff;border:1px solid #666}button:disabled{opa
 @keyframes eggfade{to{opacity:0}}
 #log{height:104px;overflow:auto;font-size:13px}
 #log.dr{cursor:pointer;border:1px dashed #444}
-#log.dr:empty::before{content:"Tap here to chat 🔒 (only players who guessed see it)";color:#777;font-size:13px}#scores{font-size:12px;overflow-x:auto;white-space:nowrap}
+#log:empty::before{content:"Type your guess below 👇";display:block;text-align:center;padding-top:34px;color:#777;font-size:13px}
+#log.dr:empty::before{content:"Tap to chat 🔒 - Tap again to hide Text Box"}
+#scores{font-size:12px;overflow-x:auto;white-space:nowrap}
 #fw{position:fixed;inset:0;pointer-events:none;z-index:5}
 .pl{padding:5px 0}
 .bw{display:flex;flex-direction:column;margin-bottom:6px}.bw.me{align-items:flex-end}
@@ -81,7 +83,7 @@ button.o{background:#2a2a2a;color:#fff;border:1px solid #666}button:disabled{opa
 .ar .tt{color:#9e9e9e;font-size:12px}
 .ar .pn{font-weight:700;font-size:16px}
 .ar .dt{color:var(--amber);font-weight:700;font-size:14px}
- 
+
 /* ---- keyboard / viewport fixes ---- */
 body{overflow:hidden}
 .s{transform:translateY(var(--top,0px))}
@@ -181,11 +183,28 @@ body{overflow:hidden}
     max-height:60%;
   }
 }
- 
+
+/* ---- settings / modal / themes ---- */
+#menu{position:relative}
+#gear{position:absolute;top:calc(10px + env(safe-area-inset-top));left:14px;background:none;border:0;color:var(--amber);padding:8px;font-size:14px}
+.sr{display:flex;align-items:center;gap:8px;background:var(--panel);border-radius:14px;padding:14px 16px;cursor:pointer}
+.sr .si{width:32px;font-size:22px}.sr .st{flex:1;font-size:17px}
+#modal{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:20;padding:16px}
+#modal.on{display:flex}
+#mbox{background:#2b2b2b;border-radius:16px;padding:18px;width:100%;max-width:400px;max-height:85%;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;border:1px solid #888;background:#2a2a2a;cursor:pointer}
+.opt.sel{border:2px solid var(--amber)}.opt.lock{opacity:.6;cursor:default}
+.sw{width:28px;height:28px;border-radius:50%;flex:none}
+.av{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.av span{font-size:24px;text-align:center;padding:6px;border-radius:50%;background:#2a2a2a;cursor:pointer}
+.av span.sel{background:var(--amber)}
+.pb{height:6px;background:#333;border-radius:3px;overflow:hidden;margin-top:6px}
+.pb i{display:block;height:100%;background:var(--amber)}
 </style></head><body>
 <div id="ban">Connecting to server…</div>
 
 <div id="menu" class="s on" style="justify-content:center">
+ <button id="gear">⚙ SETTINGS</button>
  <h1>GUESS THE<b class="am">DRAWING</b></h1>
  <p class="gr" style="text-align:center;margin:0">Draw • Guess • Win</p>
  <input id="name" maxlength="20" placeholder="Your name" autocomplete="off">
@@ -193,7 +212,6 @@ body{overflow:hidden}
  <button id="create" class="o">CREATE ROOM</button>
  <button id="jopen" class="o">JOIN ROOM</button>
  <div class="err" id="merr"></div>
- <button id="snd" class="o" style="background:none;border:0;color:#999">🔊 Sound: ON</button>
 </div>
 
 <div id="joinscr" class="s" style="justify-content:center">
@@ -254,6 +272,13 @@ body{overflow:hidden}
   <button class="o" id="fleave" style="background:none;border:0;color:#bbb;margin-top:8px">← Back to menu</button>
  </div>
 </div>
+
+<div id="settings" class="s">
+ <h1 style="font-size:28px"><b class="am" style="font-size:28px">SETTINGS</b></h1>
+ <div class="grow" id="srows" style="display:flex;flex-direction:column;gap:10px"></div>
+ <button id="sback" class="o" style="background:none;border:0;color:#bbb">← Back</button>
+</div>
+<div id="modal"><div id="mbox"><h2 id="mt" style="margin:0;font-size:20px"></h2><div id="mb" style="display:flex;flex-direction:column;gap:8px"></div><button id="mx" class="o">CLOSE</button></div></div>
 <canvas id="fw"></canvas>
 
 <script>
@@ -275,12 +300,97 @@ function beep(n){ if(!sound)return; try{ ac=ac||new(window.AudioContext||window.
 addEventListener('pointerdown',()=>{try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}},{once:true});
 const SND = {correct:[[523,.1],[659,.1],[784,.1],[1047,.3]], fail:[[392,.2],[370,.2],[349,.2],[330,.5]], tick:[[1800,.04]],
   end:[[784,.12],[659,.12],[523,.3]], win:[[523,.1],[659,.1],[784,.1],[1047,.15],[784,.1],[1047,.5]], start:[[500,.08],[700,.08],[1000,.15]]};
-$('snd').onclick = () => { sound=!sound; localStorage.snd=sound?'on':'off'; $('snd').textContent = sound?'🔊 Sound: ON':'🔇 Sound: OFF'; };
-$('snd').textContent = sound?'🔊 Sound: ON':'🔇 Sound: OFF';
+
+// ---------- stats / themes / skins / avatars / achievements ----------
+const ST = { get:k=>+localStorage['st_'+k]||0, add:k=>{ localStorage['st_'+k]=ST.get(k)+1; },
+  reset:()=>['played','won','lost','correct'].forEach(k=>localStorage.removeItem('st_'+k)) };
+
+const THEMES=[
+ {id:'classic',name:'Classic',accent:'#ffc107',bg:'#121212',panel:'#1e1e1e',txt:'Free',ok:()=>true},
+ {id:'ocean',name:'Ocean',accent:'#4fc3f7',bg:'#0b1620',panel:'#15283a',txt:'Play 3 games',ok:()=>ST.get('played')>=3},
+ {id:'forest',name:'Forest',accent:'#81c784',bg:'#0f1a12',panel:'#1a2a1e',txt:'Win 1 game',ok:()=>ST.get('won')>=1},
+ {id:'sunset',name:'Sunset',accent:'#ff7043',bg:'#1a0f0f',panel:'#2a1a18',txt:'25 correct guesses',ok:()=>ST.get('correct')>=25},
+ {id:'violet',name:'Violet',accent:'#ba68c8',bg:'#140f1f',panel:'#221a33',txt:'Win 5 games',ok:()=>ST.get('won')>=5}];
+const theme=()=>THEMES.find(t=>t.id===localStorage.theme)||THEMES[0];
+function applyTheme(){ const t=theme(), r=document.documentElement.style;
+  r.setProperty('--amber',t.accent); r.setProperty('--bg',t.bg); r.setProperty('--panel',t.panel);
+  document.querySelector('meta[name=theme-color]').content=t.bg; }
+applyTheme();
+
+const SKINS=[
+ {id:'egg',name:'Fried Egg',emoji:'🥚',what:'an egg',txt:'Free',ok:()=>true},
+ {id:'tomato',name:'Tomato',emoji:'🍅',what:'a tomato',main:'#e53935',dark:'#b71c1c',dot:'#ffeb3b',txt:'Play 5 games',ok:()=>ST.get('played')>=5},
+ {id:'pie',name:'Cream Pie',emoji:'🥧',what:'a cream pie',main:'#fff8e1',dark:'#d7ccc8',dot:'#e53935',txt:'10 correct guesses',ok:()=>ST.get('correct')>=10},
+ {id:'slime',name:'Green Slime',emoji:'🟢',what:'green slime',main:'#76ff03',dark:'#2e7d32',dot:'#ccff90',txt:'Win 3 games',ok:()=>ST.get('won')>=3}];
+const skinOf=id=>SKINS.find(s=>s.id===id)||SKINS[0];
+const skin=()=>skinOf(localStorage.skin);
+function blobSplat(k){ const L=[[-.22,-.12],[.24,-.16],[-.18,.22],[.22,.2]];
+  let s=`<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="25" fill="${k.dark}"/>`;
+  L.forEach(([x,y])=>s+=`<circle cx="${50+x*50}" cy="${50+y*50}" r="15" fill="${k.dark}"/>`);
+  s+=`<circle cx="50" cy="50" r="22" fill="${k.main}"/>`;
+  L.forEach(([x,y])=>s+=`<circle cx="${50+x*50}" cy="${50+y*50}" r="13" fill="${k.main}"/>`);
+  s+=`<circle cx="47.5" cy="54" r="2" fill="${k.dot}"/><circle cx="57" cy="47.5" r="1.75" fill="${k.dot}"/><circle cx="51" cy="61" r="1.5" fill="${k.dot}"/><circle cx="42.5" cy="41" r="4.5" fill="#fff" opacity=".4"/>`;
+  for(let i=0;i<8;i++){ const a=Math.random()*6.283, d=(.55+Math.random()*.4)*50;
+    s+=`<circle cx="${(50+Math.cos(a)*d).toFixed(1)}" cy="${(50+Math.sin(a)*d).toFixed(1)}" r="${(2.5+Math.random()*3.5).toFixed(1)}" fill="${k.main}"/>`; }
+  return s+'</svg>'; }
+const splat=id=>{ const k=skinOf(id); return k.id==='egg'?friedEgg():blobSplat(k); };
+
+const AVATARS=['🙂','😎','🤠','🥳','🤓','😺','🐶','🐼','🦊','🐸','🐵','🦁','🐯','🐧','🦄','🐙','🦖','🤖','👻','👽','🎨','🚀','⚽','🍕'];
+S.avatar = AVATARS.includes(localStorage.avatar) ? localStorage.avatar : '🙂';
+const avOf=id=>(S.players.find(p=>p.id===id)||{}).avatar||'🙂';
+
+const ACH=[
+ ['first_game','🎮','First Steps','Play 1 game',1,'played'],
+ ['regular','🎲','Regular','Play 10 games',10,'played'],
+ ['veteran','🏅','Veteran','Play 50 games',50,'played'],
+ ['first_win','🏆','First Win','Win 1 game',1,'won'],
+ ['champion','👑','Champion','Win 10 games',10,'won'],
+ ['sharp_eye','👀','Sharp Eye','Make 10 correct guesses',10,'correct'],
+ ['mind_reader','🧠','Mind Reader','Make 50 correct guesses',50,'correct'],
+ ['guess_guru','🔮','Guess Guru','Make 100 correct guesses',100,'correct']
+].map(([id,ic,name,desc,goal,stat])=>({id,ic,name,desc,goal,stat}));
+const achDone=()=>ACH.filter(a=>ST.get(a.stat)>=a.goal).length;
+function checkAch(){ let seen=[]; try{ seen=JSON.parse(localStorage.ach_seen||'[]'); }catch(e){}
+  const fresh=ACH.filter(a=>ST.get(a.stat)>=a.goal && !seen.includes(a.id)); if(!fresh.length)return;
+  localStorage.ach_seen=JSON.stringify(seen.concat(fresh.map(a=>a.id)));
+  modal(fresh.length===1?'Achievement unlocked!':'Achievements unlocked!',
+    fresh.map(a=>`<div class="opt" style="cursor:default"><span style="font-size:30px">${a.ic}</span><div><b>${a.name}</b><div class="gr" style="font-size:12px">${a.desc}</div></div></div>`).join(''), null, 'NICE!'); }
+
+// ---- modal + settings screen ----
+function modal(t,h,fn,btn){ $('mt').textContent=t; $('mb').innerHTML=h; $('mb').onclick=fn||null; $('mx').textContent=btn||'CLOSE'; $('modal').classList.add('on'); }
+function closeModal(){ $('modal').classList.remove('on'); }
+$('mx').onclick=closeModal; $('modal').onclick=e=>{ if(e.target.id==='modal') closeModal(); };
+
+function openAvatar(){ modal('Choose your avatar','<div class="av">'+AVATARS.map(a=>`<span data-a="${a}" class="${a===S.avatar?'sel':''}">${a}</span>`).join('')+'</div>',
+  e=>{ const a=e.target.dataset.a; if(!a)return; S.avatar=localStorage.avatar=a; closeModal(); renderSettings(); }); }
+function openTheme(){ modal('Themes', THEMES.map(t=>{ const ok=t.ok(), sel=theme().id===t.id;
+  return `<div class="opt${sel?' sel':''}${ok?'':' lock'}" data-t="${ok?t.id:''}" style="background:${t.panel};border-color:${sel?t.accent:'#888'}"><i class="sw" style="background:${t.accent}"></i><div style="flex:1"><b style="color:${ok?'#fff':'#888'}">${t.name}</b>${ok?'':`<div class="gr" style="font-size:12px">🔒 ${t.txt}</div>`}</div>${sel?`<b style="color:${t.accent};font-size:20px">✓</b>`:''}</div>`; }).join(''),
+  e=>{ const el=e.target.closest('[data-t]'); if(!el||!el.dataset.t)return; localStorage.theme=el.dataset.t; applyTheme(); renderSettings(); openTheme(); }); }
+function openSkin(){ modal('Egg skin', SKINS.map(k=>{ const ok=k.ok(), sel=skin().id===k.id;
+  return `<div class="opt${sel?' sel':''}${ok?'':' lock'}" data-k="${ok?k.id:''}"><span style="font-size:28px;width:44px">${k.emoji}</span><div style="flex:1"><b style="color:${ok?'#fff':'#888'}">${k.name}</b>${ok?'':`<div class="gr" style="font-size:12px">🔒 ${k.txt}</div>`}</div>${sel?'<b class="am" style="font-size:20px">✓</b>':''}</div>`; }).join(''),
+  e=>{ const el=e.target.closest('[data-k]'); if(!el||!el.dataset.k)return; localStorage.skin=el.dataset.k; renderSettings(); openSkin(); }); }
+function openStats(){ const r=(l,k)=>`<div class="row" style="padding:8px 0"><span style="font-size:18px">${l}</span><b class="am" style="font-size:20px;text-align:right">${ST.get(k)}</b></div>`;
+  modal('My stats', r('Games played','played')+r('Games won','won')+r('Games lost','lost')+r('Correct guesses','correct')+'<button class="o" data-reset="1" style="background:none;border:0;color:#999">Reset stats</button>',
+  e=>{ if(e.target.dataset.reset && confirm('Reset stats? All your numbers will go back to 0.')){ ST.reset(); renderSettings(); openStats(); } }); }
+function openAch(){ modal(`Achievements ${achDone()}/${ACH.length}`, ACH.map(a=>{ const p=Math.min(ST.get(a.stat),a.goal), d=p>=a.goal;
+  return `<div class="opt" style="cursor:default;${d?'border:2px solid var(--amber)':''}"><span style="font-size:28px;width:40px">${d?a.ic:'🔒'}</span><div style="flex:1"><b style="color:${d?'#fff':'#999'}">${a.name}</b><div class="gr" style="font-size:12px">${a.desc}</div><div class="pb"><i style="width:${p/a.goal*100}%"></i></div></div><b class="${d?'am':'gr'}" style="font-size:${d?20:12}px">${d?'✓':p+'/'+a.goal}</b></div>`; }).join('')); }
+
+const srow=(ic,t,v,id)=>`<div class="sr" data-r="${id}"><span class="si">${ic}</span><b class="st">${t}</b><span class="gr">${v}</span><span class="gr">›</span></div>`;
+function renderSettings(){ $('srows').innerHTML =
+  srow(S.avatar,'Avatar','','avatar') + srow(sound?'🔊':'🔇','Sound',sound?'ON':'OFF','sound') +
+  srow('🎨','Theme',theme().name,'theme') + srow(skin().emoji,'Egg skin',skin().name,'skin') +
+  srow('📊','My stats','','stats') + srow('🏆','Achievements',`${achDone()}/${ACH.length}`,'ach'); }
+$('srows').onclick = e => { const el=e.target.closest('[data-r]'); if(!el)return; const r=el.dataset.r;
+  if(r==='sound'){ sound=!sound; localStorage.snd=sound?'on':'off'; renderSettings(); }
+  else if(r==='avatar') openAvatar(); else if(r==='theme') openTheme(); else if(r==='skin') openSkin();
+  else if(r==='stats') openStats(); else if(r==='ach') openAch(); };
+$('gear').onclick = () => { renderSettings(); show('settings'); };
+$('sback').onclick = () => show('menu');
+checkAch();
 
 // ---------- screens ----------
 function show(id){ S.phase=id; document.querySelectorAll('.s').forEach(e=>e.classList.toggle('on',e.id===id));
-  if(id==='game') requestAnimationFrame(fit); }
+  if(id==='game') requestAnimationFrame(fit); if(id==='menu') checkAch(); }
 const me = () => S.players.find(p=>p.id===pid);
 const nameOf = id => (S.players.find(p=>p.id===id)||{}).name || '?';
 
@@ -289,7 +399,7 @@ const socket = io(SERVER, {query:{playerId:pid}, transports:['websocket','pollin
 socket.on('connect', () => $('ban').style.display='none');
 socket.on('disconnect', () => { $('ban').textContent = S.room ? 'Connection lost. Reconnecting…' : 'Connecting to server…'; $('ban').style.display='block'; });
 socket.on('connect_error', () => { $('ban').textContent='Connecting to server…'; $('ban').style.display='block'; });
-socket.on('resync_none', () => { if(S.phase!=='menu'&&S.phase!=='joinscr'){ S.room=''; show('menu'); } });
+socket.on('resync_none', () => { if(S.phase!=='menu'&&S.phase!=='joinscr'&&S.phase!=='settings'){ S.room=''; show('menu'); } });
 socket.on('resync', d => {
   S.room=d.roomCode; S.pub=!!d.isPublic; S.players=d.players; S.scores=d.scores||{}; S.strokes=(d.strokes||[]).slice(); S.redo=[]; S.live=null;
   S.drawer=d.drawerName; S.isDrawer=d.drawerId===pid; S.guessed=!!d.iGuessedCorrectly; S.vote=d.myVote||''; S.eggsLeft=d.eggsLeft||0; S.eggThrown=!!d.eggThrown;
@@ -321,7 +431,7 @@ socket.on('draw_live', d => { if(S.isDrawer)return; if(d.start||!S.live) S.live=
 socket.on('draw_live_end', () => { S.live=null; redraw(); });
 socket.on('chat_message', d => { const mine=d.playerId===pid; bubble((mine?'':`<span style="color:${nameColor(d.playerId,d.playerName)};font-weight:700">${esc(d.playerName)}</span>: `)+esc(d.message), mine); });
 socket.on('correct_guess', d => { bubble(`✓ ${esc(d.playerName)} got it! +${d.points}`, d.playerId===pid, 'ok');
-  if(d.playerId===pid){ S.guessed=true; updateUI(); } beep(SND.correct); });
+  if(d.playerId===pid){ S.guessed=true; ST.add('correct'); updateUI(); } beep(SND.correct); });
 socket.on('close_guess', () => { sys('So close!'); beep([[659,.06],[880,.14]]); });
 socket.on('drawer_left', d => sys(`${d.playerName} left…`));
 socket.on('reaction_update', d => setReact(d.likes,d.dislikes));
@@ -330,28 +440,30 @@ socket.on('reaction_made', d => { const t=$('toast'); t.style.color=d.type==='li
 socket.on('eggs_update', d => { S.eggsLeft=d.eggsLeft; updateUI(); });
 socket.on('egg_thrown', d => {
   if(d.playerId===pid){ S.eggThrown=true; updateUI(); }
-  const e=document.createElement('div'); e.className='egg'; e.innerHTML=friedEgg(); e.style.left=d.x*100+'%'; e.style.top=d.y*100+'%'; $('eggs').appendChild(e);
-  setTimeout(()=>e.remove(),3000); beep([[150,.06],[90,.12]]); if(S.isDrawer && navigator.vibrate) navigator.vibrate([45,60,80]); });
+  const k=skinOf(d.skin);
+  const e=document.createElement('div'); e.className='egg'; e.innerHTML=splat(k.id); e.style.left=d.x*100+'%'; e.style.top=d.y*100+'%'; $('eggs').appendChild(e);
+  setTimeout(()=>e.remove(),3000); beep([[150,.06],[90,.12]]); if(S.isDrawer && navigator.vibrate) navigator.vibrate([45,60,80]);
+  sys(`${k.emoji} ${d.playerName} threw ${k.what}!`); });
 socket.on('round_ended', d => {
   S.over=true; S.choosing=false; S.scores=d.scores; drawScores(); updateUI();
-  const rows=Object.entries(d.roundPoints||{}).map(([id,p])=>`<div class="row" style="justify-content:space-between"><span style="text-align:left">${esc(nameOf(id))}</span><b style="color:#4caf50;text-align:right">+${p}</b></div>`).join('');
+  const rows=Object.entries(d.roundPoints||{}).map(([id,p])=>`<div class="row" style="justify-content:space-between"><span style="text-align:left">${esc(avOf(id))} ${esc(nameOf(id))}</span><b style="color:#4caf50;text-align:right">+${p}</b></div>`).join('');
   $('over').innerHTML=`<div style="font-size:24px;font-weight:800">ROUND OVER</div><div class="gr">The word was</div><div class="am" style="font-size:22px;font-weight:700">${esc(d.word||'—')}</div><div style="width:100%;max-width:300px">${rows}</div><div class="gr">Next round starting…</div>`;
   $('over').style.display='flex';
   const missed = d.word && !S.isDrawer && !S.guessed; beep(missed?SND.fail:SND.end); });
 socket.on('game_finished', d => {
   S.scores=d.scores;
-  const list=S.players.map(p=>({id:p.id,name:p.name,score:d.scores[p.id]??0})).sort((a,b)=>b.score-a.score);
+  const list=S.players.map(p=>({id:p.id,name:p.name,av:p.avatar,score:d.scores[p.id]??0})).sort((a,b)=>b.score-a.score);
   const top=list.length?list[0].score:0; hideOv();
   const MED=['🥇','🥈','🥉'], COL=['#ffc107','#b0bec5','#cd7f32'], HT=[130,100,80];
 
   // podium order: 2nd, 1st, 3rd
   $('pod').innerHTML=[1,0,2].map(i=>{ const r=list[i]; if(!r) return '<div class="pc"></div>';
-    return `<div class="pc">${r.score===top&&top>0?'<div class="cr">👑</div>':''}<div class="nm">${esc(r.name)}</div><div class="sc">${r.score}</div><div class="bar" style="background:${COL[i]};--h:${HT[i]}px">${MED[i]}</div></div>`; }).join('');
+    return `<div class="pc">${r.score===top&&top>0?'<div class="cr">👑</div>':''}<div style="font-size:26px">${esc(r.av||'🙂')}</div><div class="nm">${esc(r.name)}</div><div class="sc">${r.score}</div><div class="bar" style="background:${COL[i]};--h:${HT[i]}px">${MED[i]}</div></div>`; }).join('');
   requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll('#pod .pc').forEach(e=>e.classList.add('go'))));
 
   // everyone after 3rd place
   const rest=list.slice(3);
-  $('fsc').innerHTML = rest.length ? `<div class="rest">${rest.map((r,i)=>`<div class="rr"><span class="rk">#${i+4}</span><span class="nm">${esc(r.name)}</span><b>${r.score}</b></div>`).join('')}</div>` : '';
+  $('fsc').innerHTML = rest.length ? `<div class="rest">${rest.map((r,i)=>`<div class="rr"><span class="rk">#${i+4}</span><span class="nm">${esc(r.av||'🙂')} ${esc(r.name)}</span><b>${r.score}</b></div>`).join('')}</div>` : '';
 
   // awards
   const aw=d.awards||[];
@@ -359,6 +471,7 @@ socket.on('game_finished', d => {
 
   show('final'); $('final').scrollTop=0;
   const won=top>0&&(d.scores[pid]??-1)===top;
+  if(d.scores[pid]!==undefined){ ST.add('played'); ST.add(won?'won':'lost'); }
   if(won){ beep(SND.win); fireworks(); } else beep([[523,.12],[659,.12],[784,.12],[1047,.4]]);
   let s=15; clearInterval(finalTimer); $('fback').textContent=`Back to lobby in ${s}s...`;
   finalTimer=setInterval(()=>{ s--; $('fback').textContent=`Back to lobby in ${s}s...`; if(s<=0){ clearInterval(finalTimer); stopFw(); drawLobby(); show('lobby'); } },1000);
@@ -370,7 +483,7 @@ const q = new URLSearchParams(location.search).get('room'); if(q){ $('code').val
 $('code').oninput = e => e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
 function enter(ev, extra, nameEl, errEl){ const name=nameEl.value.trim(); if(!name){ errEl.textContent='Enter your name.'; return; }
   localStorage.name=name; errEl.textContent='';
-  socket.emit(ev, {playerName:name, ...extra}, r => { if(r&&r.success){ S.room=r.roomCode; S.pub=!!r.isPublic; S.players=r.players; S.chat=[]; S.pickKey=''; drawChat(); drawLobby(); show('lobby'); } else errEl.textContent=(r&&r.message)||'Could not connect.'; }); }
+  socket.emit(ev, {playerName:name, avatar:S.avatar, ...extra}, r => { if(r&&r.success){ S.room=r.roomCode; S.pub=!!r.isPublic; S.players=r.players; S.chat=[]; S.pickKey=''; drawChat(); drawLobby(); show('lobby'); } else errEl.textContent=(r&&r.message)||'Could not connect.'; }); }
 $('create').onclick = () => enter('create_room', {}, $('name'), $('merr'));
 $('play').onclick = () => enter('play_public', {}, $('name'), $('merr'));
 $('jopen').onclick = () => { $('name2').value=$('name').value; $('jerr').textContent=''; show('joinscr'); };
@@ -380,13 +493,15 @@ $('join').onclick = () => { const c=$('code').value.trim(); if(c.length!==6){ $(
 // ---------- lobby ----------
 function drawLobby(){
   $('rcode').textContent=S.room; const m=me(), host=!!(m&&m.isHost);
-  $('plist').innerHTML=S.players.map(p=>`<div class="pl" data-id="${p.id}">👤 <span style="color:${p.connected?'#fff':'#777'}">${esc(p.name)}${p.connected?'':' (reconnecting…)'}</span>${p.isHost?' <b class="am" style="float:right;font-size:11px">HOST</b>':''}</div>`).join('');
+  $('plist').innerHTML=S.players.map(p=>`<div class="pl" data-id="${p.id}">${esc(p.avatar||'🙂')} <span style="color:${p.connected?'#fff':'#777'}">${esc(p.name)}${p.connected?'':' (reconnecting…)'}</span>${p.isHost?' <b class="am" style="float:right;font-size:11px">HOST</b>':''}</div>`).join('');
   $('host').style.display=host?'flex':'none'; $('wait').style.display=host?'none':'block';
   $('start').disabled = S.players.filter(p=>p.connected).length<2; }
 $('plist').onclick = e => { const el=e.target.closest('.pl'); const m=me(); if(!el||!m||!m.isHost||el.dataset.id===pid)return;
   const id=el.dataset.id, n=nameOf(id);
   if(S.pub){ if(confirm(`Kick ${n}?`)) socket.emit('kick_player',{playerId:id}); return; }
-  if(confirm(`Make ${n} the host?\n(Cancel for the kick option)`)) socket.emit('transfer_host',{playerId:id}); else if(confirm(`Kick ${n}?`)) socket.emit('kick_player',{playerId:id}); };// ---- chat bubbles + reactions (same wire format as the Android app, so both see each other's) ----
+  if(confirm(`Make ${n} the host?\n(Cancel for the kick option)`)) socket.emit('transfer_host',{playerId:id}); else if(confirm(`Kick ${n}?`)) socket.emit('kick_player',{playerId:id}); };
+
+// ---- chat bubbles + reactions (same wire format as the Android app, so both see each other's) ----
 const REACT='⚑|', REPLY='↪|', EMOJIS=['👍','❤️','😂','😮','😢'];
 const NAMECOL=['#ff7043','#42a5f5','#66bb6a','#ab47bc','#ffca28','#26c6da','#ec407a','#9ccc65','#7e57c2','#ffa726'];
 const jhash=t=>{ let h=0; for(let i=0;i<t.length;i++) h=(Math.imul(31,h)+t.charCodeAt(i))|0; return h; };
@@ -440,7 +555,7 @@ function setHint(h, word){ const el=$('hint'); if(S.isDrawer&&word){ el.dataset.
 function setReact(l,d){ $('like').textContent='👍 '+l; $('dis').textContent='👎 '+d; }
 function bubble(inner,mine,cls){ const l=$('log'); l.insertAdjacentHTML('beforeend',`<div class="bw${mine?' me':''}"><div class="bb ${cls||''}">${inner}</div></div>`); l.scrollTop=l.scrollHeight; }
 function sys(t){ const l=$('log'); l.insertAdjacentHTML('beforeend',`<div class="sys">${esc(t)}</div>`); l.scrollTop=l.scrollHeight; }
-function drawScores(){ $('scores').innerHTML='<b class="am sh">SCORES</b> '+S.players.slice().sort((a,b)=>(S.scores[b.id]||0)-(S.scores[a.id]||0)).map(p=>`<span class="sp">${esc(p.name)} <b class="am">${S.scores[p.id]||0}</b></span>`).join(' &nbsp; '); }
+function drawScores(){ $('scores').innerHTML='<b class="am sh">SCORES</b> '+S.players.slice().sort((a,b)=>(S.scores[b.id]||0)-(S.scores[a.id]||0)).map(p=>`<span class="sp">${esc(p.avatar||'🙂')} ${esc(p.name)} <b class="am">${S.scores[p.id]||0}</b></span>`).join(' &nbsp; '); }
 function hideOv(){ $('choose').style.display='none'; $('over').style.display='none'; }
 let chTimer;
 function showChoose(words, secs){ const o=$('choose'); o.style.display='flex'; clearInterval(chTimer);
@@ -453,11 +568,11 @@ function updateUI(){
   $('tools').style.display = S.isDrawer ? 'flex' : 'none'; if(!S.isDrawer&&S.panel){ S.panel=''; renderTb(); } if(!S.isDrawer) S.chatOpen=false; $('guess').style.display = (!S.isDrawer||S.chatOpen) ? 'block' : 'none'; $('log').classList.toggle('dr',!!S.isDrawer);
   $('guess').placeholder = S.isDrawer ? 'Chat 🔒 (only players who guessed)' : S.guessed ? 'Chat 🔒 (drawer & guessers only)' : 'Type your guess';
   const r=$('react'); r.style.display = (!S.isDrawer && !S.choosing && !S.over) ? 'flex' : 'none';
-  $('egg').style.display = (S.eggsLeft>0 && !S.eggThrown) ? '' : 'none';
+  $('egg').style.display = (S.eggsLeft>0 && !S.eggThrown) ? '' : 'none'; $('egg').textContent = skin().emoji;
   $('like').style.opacity = S.vote==='dislike'?.4:1; $('dis').style.opacity = S.vote==='like'?.4:1; }
 $('like').onclick = () => { if(!S.vote){ S.vote='like'; socket.emit('react',{type:'like'}); updateUI(); } };
 $('dis').onclick = () => { if(!S.vote){ S.vote='dislike'; socket.emit('react',{type:'dislike'}); updateUI(); } };
-$('egg').onclick = () => socket.emit('throw_egg');
+$('egg').onclick = () => socket.emit('throw_egg', {skin: skin().id});
 $('guess').onkeydown = e => { if(e.key==='Enter'){ const t=e.target.value.trim(); if(t){ socket.emit('player_guess',{guess:t}); e.target.value=''; } } };
 
 // Drawer: tap the messages box to start chatting (no permanent text box)
@@ -559,7 +674,7 @@ function vp(){
   const v = window.visualViewport, h = v ? v.height : innerHeight;
   if(h > baseH) baseH = h;
   const desktop = matchMedia('(min-width:900px) and (min-height:600px)').matches;
-const kb = !desktop && baseH - h > 120;          // keyboard is open (phones only)
+  const kb = !desktop && baseH - h > 120;          // keyboard is open (phones only)
   document.body.classList.toggle('kb', kb);
   const r = document.documentElement.style;
   r.setProperty('--vh', h + 'px');
