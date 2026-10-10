@@ -256,7 +256,10 @@ body{overflow:hidden}
  <div id="top"><div class="card" id="time">--</div><div class="card" style="flex:1"><div id="info" class="gr" style="font-size:12px"></div><div id="hint"></div></div></div>
  <div id="cwrap"><canvas id="cv"></canvas><div id="eggs"></div>
   <div id="react"><button id="like">👍 0</button><button id="dis">👎 0</button><button id="taunt">💬</button><button id="egg">🥚</button></div>
-  <button id="tmute" class="o" style="position:absolute;top:6px;right:6px;display:none;padding:6px 10px;border-radius:20px;font-size:13px">🔔 Taunts on</button>
+  <div id="tmwrap" style="position:absolute;top:6px;right:6px;display:none;align-items:center;gap:8px">
+   <span id="tnote" style="display:none;background:#000b;color:#fff;font-size:13px;font-weight:700;padding:5px 10px;border-radius:14px;white-space:nowrap"></span>
+   <button id="tmute" class="o" style="width:38px;height:38px;padding:0;border-radius:50%;font-size:18px">🔔</button>
+  </div>
   <div id="toast" style="position:absolute;bottom:6px;left:6px;right:6px;text-align:center;font-weight:700;font-size:13px"></div>
   <div id="tcap"></div><div id="pop"></div><div id="strip"></div><div class="ov" id="choose"></div><div class="ov" id="over"></div></div>
  <div id="tools">
@@ -360,7 +363,7 @@ function throwAnim(d,k){
   const a=f.animate(frames,{duration:THROW_MS,easing:'linear'}); a.onfinish=()=>f.remove(); }
 
 // ---------- taunts (guessers only, same availability as eggs) ----------
-const TAUNTS=['Nice try!','Too easy!','Is that your best drawing?','Better luck next time!','Hurry up!','Wow, amazing!','Oh no, not again!','I knew it all along!','That was so close!','Is anyone even awake?','Well played, champion!'];
+const TAUNTS=['Nice try!','Too easy!','Is that your best drawing?','Better luck next time!','Hurry up!','Wow, amazing!','Oh no, not again!','Did a toddler draw that?','I knew it all along!','That was so close!','Is anyone even awake?','Well played, champion!'];
 const tauntsOn=()=>localStorage.taunts!=='off';
 let tauntAudio, tcapTimer;
 // Optional audio files: taunts/taunt_1.mp3 ... taunts/taunt_12.mp3 next to index.html.
@@ -451,7 +454,7 @@ socket.on('room_updated', d => { S.room=d.roomCode; S.pub=!!d.isPublic; S.player
 socket.on('score_update', d => { S.scores=d.scores; drawScores(); });
 socket.on('kicked', () => { S.room=''; show('menu'); alert('The host removed you from the room'); });
 socket.on('lobby_message', d => { S.chat.push(d); if(S.chat.length>200) S.chat.shift(); drawChat(); });
-socket.on('round_started', d => { clearInterval(finalTimer); stopFw(); S.strokes=[]; S.redo=[]; S.live=null; S.guessed=false; S.vote=''; S.eggThrown=false; S.tauntSent=false; S.drawerMute=false; S.drawer=d.drawerName; S.isDrawer=d.drawerId===pid;
+socket.on('round_started', d => { clearInterval(finalTimer); stopFw(); S.strokes=[]; S.redo=[]; S.live=null; S.guessed=false; S.vote=''; S.eggThrown=false; S.tauntSent=false; S.drawerMute=false; $('tnote').style.display='none'; S.drawer=d.drawerName; S.isDrawer=d.drawerId===pid;
   $('info').textContent=`Round ${d.currentRound}/${d.totalRounds}`; $('log').innerHTML=''; $('eggs').innerHTML=''; $('toast').textContent=''; show('game'); redraw(); });
 socket.on('word_choice_started', d => { clearInterval(finalTimer); stopFw(); S.choosing=true; S.over=false; S.isDrawer=d.drawerId===pid; S.canSkip=d.canSkip; S.eggsLeft=d.eggsLeft; S.drawer=d.drawerName;
   hideOv(); showChoose(d.words, d.choiceSeconds); setHint('',null); $('time').textContent='--'; setReact(0,0); updateUI();
@@ -615,14 +618,17 @@ function updateUI(){
   const r=$('react'); r.style.display = (!S.isDrawer && !S.choosing && !S.over) ? 'flex' : 'none';
   $('egg').style.display = (S.eggsLeft>0 && !S.eggThrown) ? '' : 'none'; $('egg').textContent = skin().emoji;
   $('taunt').style.display = (tauntsOn() && S.tauntsLeft>0 && !S.tauntSent) ? '' : 'none';
-  const tm=$('tmute'); tm.style.display = (S.isDrawer && !S.choosing && !S.over) ? '' : 'none';
-  tm.textContent = S.drawerMute ? '🔕 Taunts off' : '🔔 Taunts on'; tm.style.background = S.drawerMute ? '#ff6b6b' : ''; tm.style.color = S.drawerMute ? '#000' : '';
+  const tm=$('tmute'); $('tmwrap').style.display = (S.isDrawer && !S.choosing && !S.over) ? 'flex' : 'none';
+  tm.textContent = S.drawerMute ? '🔕' : '🔔'; tm.style.background = S.drawerMute ? '#ff6b6b' : ''; tm.style.color = S.drawerMute ? '#000' : '';
   $('like').style.opacity = S.vote==='dislike'?.4:1; $('dis').style.opacity = S.vote==='like'?.4:1; }
 $('like').onclick = () => { if(!S.vote){ S.vote='like'; socket.emit('react',{type:'like'}); updateUI(); } };
 $('dis').onclick = () => { if(!S.vote){ S.vote='dislike'; socket.emit('react',{type:'dislike'}); updateUI(); } };
 $('egg').onclick = () => socket.emit('throw_egg', {skin: skin().id});
 $('taunt').onclick = openTaunts;
-$('tmute').onclick = () => { S.drawerMute=!S.drawerMute; updateUI(); };
+let tnoteTimer;
+$('tmute').onclick = () => { S.drawerMute=!S.drawerMute; updateUI();
+  const n=$('tnote'); n.textContent = S.drawerMute ? 'Taunts turned off' : 'Taunts turned on'; n.style.display='block';
+  clearTimeout(tnoteTimer); tnoteTimer=setTimeout(()=>{ n.style.display='none'; },2000); };
 $('guess').onkeydown = e => { if(e.key==='Enter'){ const t=e.target.value.trim(); if(t){ socket.emit('player_guess',{guess:t}); e.target.value=''; } } };
 
 // Drawer: tap the messages box to start chatting (no permanent text box)
