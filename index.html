@@ -275,6 +275,7 @@ body{overflow:hidden}
   <div id="fsc"></div>
   <div id="faw"></div>
   <div id="fback" class="gr" style="text-align:center;margin-top:24px;font-size:15px"></div>
+  <button id="fagain" style="margin-top:12px">PLAY AGAIN</button>
   <button class="o" id="fleave" style="background:none;border:0;color:#bbb;margin-top:8px">← Back to menu</button>
  </div>
 </div>
@@ -359,7 +360,7 @@ function throwAnim(d,k){
   const a=f.animate(frames,{duration:THROW_MS,easing:'linear'}); a.onfinish=()=>f.remove(); }
 
 // ---------- taunts (guessers only, same availability as eggs) ----------
-const TAUNTS=['Nice drawing!','Is that a cat?','Too slow!','Picasso is shaking!','Almost there... not.','Great job!','Wah bhai wah!','Jaldi karo!','Ye kya bana diya?','Kya baat hai!','Thora aur rang bharo!','Shabash!'];
+const TAUNTS=['Nice try!','Too easy!','Is that your best drawing?','Better luck next time!','Hurry up!','Wow, amazing!','Oh no, not again!','Did a toddler draw that?','I knew it all along!','That was so close!','Is anyone even awake?','Well played, champion!'];
 const tauntsOn=()=>localStorage.taunts!=='off';
 let tauntAudio, tcapTimer;
 // Optional audio files: taunts/taunt_1.mp3 ... taunts/taunt_12.mp3 next to index.html.
@@ -590,6 +591,7 @@ $('rcode').onclick = async () => { const c=S.room; if(!c)return;
 $('start').onclick = () => { $('lerr').textContent='';
   socket.emit('start_game',{rounds:+$('rounds').value, roundTime:+$('rtime').value, choiceCount:+$('choices').value,
     customWords:$('custom').value.split(/[,\n]/).map(s=>s.trim()).filter(Boolean), customOnly:$('conly').checked}, r=>{ if(r&&!r.success) $('lerr').textContent=r.message; }); };
+$('fagain').onclick = () => { clearInterval(finalTimer); stopFw(); drawLobby(); show('lobby'); };
 $('leave').onclick = $('fleave').onclick = () => { socket.emit('leave_room'); S.room=''; S.chat=[]; setReply(null); clearInterval(finalTimer); stopFw(); show('menu'); };
 
 // ---------- game UI ----------
