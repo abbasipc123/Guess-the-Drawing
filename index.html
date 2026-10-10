@@ -414,9 +414,9 @@ socket.on('room_updated', d => { S.room=d.roomCode; S.pub=!!d.isPublic; S.player
 socket.on('score_update', d => { S.scores=d.scores; drawScores(); });
 socket.on('kicked', () => { S.room=''; show('menu'); alert('The host removed you from the room'); });
 socket.on('lobby_message', d => { S.chat.push(d); if(S.chat.length>200) S.chat.shift(); drawChat(); });
-socket.on('round_started', d => { S.strokes=[]; S.redo=[]; S.live=null; S.guessed=false; S.vote=''; S.eggThrown=false; S.drawer=d.drawerName; S.isDrawer=d.drawerId===pid;
+socket.on('round_started', d => { clearInterval(finalTimer); stopFw(); S.strokes=[]; S.redo=[]; S.live=null; S.guessed=false; S.vote=''; S.eggThrown=false; S.drawer=d.drawerName; S.isDrawer=d.drawerId===pid;
   $('info').textContent=`Round ${d.currentRound}/${d.totalRounds}`; $('log').innerHTML=''; $('eggs').innerHTML=''; $('toast').textContent=''; show('game'); redraw(); });
-socket.on('word_choice_started', d => { S.choosing=true; S.over=false; S.isDrawer=d.drawerId===pid; S.canSkip=d.canSkip; S.eggsLeft=d.eggsLeft; S.drawer=d.drawerName;
+socket.on('word_choice_started', d => { clearInterval(finalTimer); stopFw(); S.choosing=true; S.over=false; S.isDrawer=d.drawerId===pid; S.canSkip=d.canSkip; S.eggsLeft=d.eggsLeft; S.drawer=d.drawerName;
   hideOv(); showChoose(d.words, d.choiceSeconds); setHint('',null); $('time').textContent='--'; setReact(0,0); updateUI();
   if(S.isDrawer) beep([[392,.09],[523,.09],[659,.09],[784,.22]]); });
 socket.on('game_started', d => { S.choosing=false; S.over=false; S.isDrawer=d.drawerId===pid; S.drawer=d.drawerName; hideOv(); setHint(d.hint,d.word);
