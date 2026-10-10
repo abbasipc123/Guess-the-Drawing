@@ -363,8 +363,10 @@ const TAUNTS=['Nice drawing!','Is that a cat?','Too slow!','Picasso is shaking!'
 const tauntsOn=()=>localStorage.taunts!=='off';
 let tauntAudio, tcapTimer;
 // Optional audio files: taunts/taunt_1.mp3 ... taunts/taunt_12.mp3 next to index.html.
-// If a file is missing, only the caption shows.
-function playTaunt(id){ if(!sound)return; try{ if(tauntAudio)tauntAudio.pause(); tauntAudio=new Audio('taunts/taunt_'+id+'.mp3'); tauntAudio.play().catch(()=>{}); }catch(e){} }
+// If a file is missing, a short beep plays instead.
+function tauntBeep(id){ const f=330+(id%6)*70; beep([[f,.09],[f*1.25,.09],[f*1.5,.16]]); }
+function playTaunt(id){ if(!sound)return; let done=false; const fb=()=>{ if(!done){ done=true; tauntBeep(id); } };
+  try{ if(tauntAudio)tauntAudio.pause(); const a=tauntAudio=new Audio('taunts/taunt_'+id+'.mp3'); a.onerror=fb; a.play().catch(fb); }catch(e){ fb(); } }
 function openTaunts(){ if(S.isDrawer||S.over||S.choosing||S.tauntSent||S.tauntsLeft<=0)return;
   modal('Send a taunt','<div class="gr" style="font-size:12px">One per drawing. Tease the drawing, not the person.</div>'+
     TAUNTS.map((t,i)=>`<div class="opt" data-i="${i+1}"><b>${esc(t)}</b></div>`).join(''),
