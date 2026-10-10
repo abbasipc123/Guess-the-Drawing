@@ -360,7 +360,7 @@ function throwAnim(d,k){
   const a=f.animate(frames,{duration:THROW_MS,easing:'linear'}); a.onfinish=()=>f.remove(); }
 
 // ---------- taunts (guessers only, same availability as eggs) ----------
-const TAUNTS=['Nice try!','Too easy!','Is that your best drawing?','Better luck next time!','Hurry up!','Wow, amazing!','Oh no, not again!','Did a toddler draw that?','I knew it all along!','That was so close!','Is anyone even awake?','Well played, champion!'];
+const TAUNTS=['Nice try!','Too easy!','Is that your best drawing?','Better luck next time!','Hurry up!','Wow, amazing!','Oh no, not again!','I knew it all along!','That was so close!','Is anyone even awake?','Well played, champion!'];
 const tauntsOn=()=>localStorage.taunts!=='off';
 let tauntAudio, tcapTimer;
 // Optional audio files: taunts/taunt_1.mp3 ... taunts/taunt_12.mp3 next to index.html.
