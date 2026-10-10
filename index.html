@@ -48,6 +48,7 @@ button.o{background:#2a2a2a;color:#fff;border:1px solid #666}button:disabled{opa
 #log:empty::before{content:"Type your guess below 👇";display:block;text-align:center;padding-top:34px;color:#777;font-size:13px}
 #log.dr:empty::before{content:"Tap to chat 🔒 - Tap again to hide Text Box"}
 #scores{font-size:12px;overflow-x:auto;white-space:nowrap}
+#scores .sp{margin-right:14px}
 #fw{position:fixed;inset:0;pointer-events:none;z-index:5}
 .pl{padding:5px 0}
 .bw{display:flex;flex-direction:column;margin-bottom:6px}.bw.me{align-items:flex-end}
@@ -144,44 +145,25 @@ body{overflow:hidden}
   #final{max-width:720px}
 }
 
-/* ===== SCORES COLUMN (desktop only) ===== */
+/* ===== DESKTOP GAME LAYOUT: scores | drawing | chat ===== */
 @media (min-width:900px) and (min-height:600px){
-  #scores{white-space:normal;overflow-x:hidden;overflow-y:auto;font-size:15px;padding:10px 12px}
-  #scores .sh{display:block;margin-bottom:6px;letter-spacing:1px}
-  #scores .sp{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid #333}
-  #scores .sp b{flex:none}
-
-  /* medium screens: scores get their own column on the left */
-  #game{max-width:1466px}
+  #game{max-width:1500px}
   #game.on{
-    grid-template-columns:150px minmax(0,1fr) 340px;
+    grid-template-columns:200px minmax(0,1fr) 340px;
     grid-template-rows:auto minmax(0,1fr) auto;
   }
   #top,#cwrap,#tools{grid-column:2}
   #log{grid-column:3;grid-row:1 / 3}
   #guess{grid-column:3;grid-row:3}
-  #scores{grid-column:1;grid-row:2;align-self:start;max-height:100%}
-}
-
-/* wide screens: scores sit in the blank space left of the drawing,
-   so the drawing stays exactly where it was */
-@media (min-width:1650px) and (min-height:600px){
-  #game{max-width:1280px}
-  #game.on{
-    grid-template-columns:minmax(0,1fr) 340px;
-    grid-template-rows:auto minmax(0,1fr) auto;
-  }
-  #top,#cwrap,#tools{grid-column:1}
-  #log{grid-column:2;grid-row:1 / 3}
-  #guess{grid-column:2;grid-row:3}
+  /* scores: vertical list in the left column, full height */
   #scores{
-    position:absolute;
-    right:calc(100% + 16px);
-    top:70px;
-    width:calc((100vw - 1280px) / 2 - 32px);
-    max-width:240px;
-    max-height:60%;
+    grid-column:1;grid-row:1 / 4;align-self:stretch;
+    white-space:normal;overflow-x:hidden;overflow-y:auto;max-height:none;
+    font-size:15px;padding:12px 14px;
   }
+  #scores .sh{display:block;margin-bottom:8px;letter-spacing:1px}
+  #scores .sp{display:flex;align-items:center;gap:8px;margin:0;padding:9px 0;border-top:1px solid #333}
+  #scores .sp b{flex:none;margin-left:auto}
 }
 
 /* ---- settings / modal / themes ---- */
@@ -363,7 +345,7 @@ function throwAnim(d,k){
   const a=f.animate(frames,{duration:THROW_MS,easing:'linear'}); a.onfinish=()=>f.remove(); }
 
 // ---------- taunts (guessers only, same availability as eggs) ----------
-const TAUNTS=['Nice try!','Too easy!','Is that your best drawing?','Better luck next time!','Hurry up!','Wow, amazing!','Oh no, not again!','Did a toddler draw that?','I knew it all along!','That was so close!','Is anyone even awake?','Well played, champion!'];
+const TAUNTS=['Nice try!','Too easy!','Is that your best drawing?','Better luck next time!','Hurry up!','Wow, amazing!','Oh no, not again!','I knew it all along!','That was so close!','Is anyone even awake?','Well played, champion!'];
 const tauntsOn=()=>localStorage.taunts!=='off';
 let tauntAudio, tcapTimer;
 // Optional audio files: taunts/taunt_1.mp3 ... taunts/taunt_12.mp3 next to index.html.
@@ -603,7 +585,7 @@ function setHint(h, word){ const el=$('hint'); if(S.isDrawer&&word){ el.dataset.
 function setReact(l,d){ $('like').textContent='👍 '+l; $('dis').textContent='👎 '+d; }
 function bubble(inner,mine,cls){ const l=$('log'); l.insertAdjacentHTML('beforeend',`<div class="bw${mine?' me':''}"><div class="bb ${cls||''}">${inner}</div></div>`); l.scrollTop=l.scrollHeight; }
 function sys(t){ const l=$('log'); l.insertAdjacentHTML('beforeend',`<div class="sys">${esc(t)}</div>`); l.scrollTop=l.scrollHeight; }
-function drawScores(){ $('scores').innerHTML='<b class="am sh">SCORES</b> '+S.players.slice().sort((a,b)=>(S.scores[b.id]||0)-(S.scores[a.id]||0)).map(p=>`<span class="sp">${esc(p.avatar||'🙂')} ${esc(p.name)} <b class="am">${S.scores[p.id]||0}</b></span>`).join(' &nbsp; '); }
+function drawScores(){ $('scores').innerHTML='<b class="am sh">SCORES</b> '+S.players.slice().sort((a,b)=>(S.scores[b.id]||0)-(S.scores[a.id]||0)).map(p=>`<span class="sp">${esc(p.avatar||'🙂')} ${esc(p.name)} <b class="am">${S.scores[p.id]||0}</b></span>`).join(' '); }
 function hideOv(){ $('choose').style.display='none'; $('over').style.display='none'; }
 let chTimer;
 function showChoose(words, secs){ const o=$('choose'); o.style.display='flex'; clearInterval(chTimer);
