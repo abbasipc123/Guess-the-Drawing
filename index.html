@@ -363,7 +363,7 @@ function throwAnim(d,k){
   const a=f.animate(frames,{duration:THROW_MS,easing:'linear'}); a.onfinish=()=>f.remove(); }
 
 // ---------- taunts (guessers only, same availability as eggs) ----------
-const TAUNTS=['Nice drawing!','Is that your best drawing?','Yeh kya hai?','Yeh kya dekhna parh raha hai?','Tumse na ho payega!','Shabash beta, bohot badiya!','Yeh kya bana diya tumne?','Kesay kesay log rehte hain yahan!','Kon hain ye log?'];
+const TAUNTS=['Nice drawing!','Is that your best drawing?','Yeh kya hai?','Yeh kya dekhna parh raha hai?','Tumse na ho payega!','Shabash beta, bohot badiya!','Yeh kya bana diya tumne?','Kesay kesay log rehte hain yaar!','Kon hain ye log?'];
 const tauntsOn=()=>localStorage.taunts!=='off';
 let tauntAudio, tcapTimer, tauntBusyTimer;
 // Optional audio files: taunts/taunt_1.mp3 ... taunts/taunt_12.mp3 next to index.html.
