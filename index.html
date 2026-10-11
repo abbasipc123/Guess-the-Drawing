@@ -275,8 +275,11 @@ body{overflow:hidden}
   <div class="pod" id="pod"></div>
   <div id="fsc"></div>
   <div id="faw"></div>
-  <div id="fback" class="gr" style="text-align:center;margin-top:24px;font-size:15px"></div>
-  <button class="o" id="fleave" style="background:none;border:0;color:#bbb;margin-top:8px">← Back to menu</button>
+ 
+<button id="fplay" style="margin-top:20px;width:100%">▶ PLAY AGAIN</button>
+<div id="fback" class="gr" style="text-align:center;margin-top:14px;font-size:15px"></div>
+<button class="o" id="fleave" style="background:none;border:0;color:#bbb;margin-top:8px">← Back to menu</button>
+
  </div>
 </div>
 
@@ -526,6 +529,17 @@ socket.on('game_finished', d => {
   finalTimer=setInterval(()=>{ s--; $('fback').textContent=`Back to lobby in ${s}s...`; if(s<=0){ clearInterval(finalTimer); stopFw(); drawLobby(); show('lobby'); } },1000);
 });
 
+
+$('fplay').onclick = () => {
+  clearInterval(finalTimer);
+  stopFw();
+
+  $('fback').textContent = '';
+  drawLobby();
+  show('lobby');
+};
+
+  
 // ---------- menu ----------
 $('name').value = $('name2').value = localStorage.name || '';
 const q = new URLSearchParams(location.search).get('room'); if(q){ $('code').value=q.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6); show('joinscr'); }
