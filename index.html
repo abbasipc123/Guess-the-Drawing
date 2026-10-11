@@ -23,14 +23,12 @@ button.o{background:#2a2a2a;color:#fff;border:1px solid #666}button:disabled{opa
 .err{color:var(--red);text-align:center;min-height:18px}
 .am{color:var(--amber)}.gr{color:#999}
 #ban{position:fixed;top:0;left:0;right:0;background:#b71c1c;text-align:center;padding:5px;font-weight:700;display:none;z-index:9}
-#cell{display:contents}
 #cwrap{position:relative;flex:1;min-height:0;background:#fff;border-radius:12px;overflow:hidden}
 #cv{width:100%;height:100%;display:block;touch-action:none}
 .ov{position:absolute;inset:0;background:#000b;display:none;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:16px;text-align:center}
 #top{display:flex;gap:8px;align-items:center}
 #time{width:52px;height:52px;display:grid;place-items:center;font-size:22px;font-weight:800}
 #hint{font-size:20px;font-weight:700;color:var(--amber);letter-spacing:1px;word-break:break-word}
-#hint.choosing{font-size:14px;letter-spacing:0;font-weight:600;color:#ccc}
 #tools{display:none;flex-direction:column;gap:5px}
 .pal{display:flex;gap:6px;overflow-x:auto}.dot{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid #777}
 .dot.sel{border-color:var(--amber);border-width:3px}
@@ -50,7 +48,6 @@ button.o{background:#2a2a2a;color:#fff;border:1px solid #666}button:disabled{opa
 #log:empty::before{content:"Type your guess below 👇";display:block;text-align:center;padding-top:34px;color:#777;font-size:13px}
 #log.dr:empty::before{content:"Tap to chat 🔒 - Tap again to hide Text Box"}
 #scores{font-size:12px;overflow-x:auto;white-space:nowrap}
-#scores .sp{margin-right:14px}
 #fw{position:fixed;inset:0;pointer-events:none;z-index:5}
 .pl{padding:5px 0}
 .bw{display:flex;flex-direction:column;margin-bottom:6px}.bw.me{align-items:flex-end}
@@ -147,45 +144,44 @@ body{overflow:hidden}
   #final{max-width:720px}
 }
 
-/* ===== DESKTOP GAME LAYOUT: scores | drawing | chat =====
-   Any landscape window at least 800px wide. The three parts sit together in
-   the middle of the screen; spare room is left empty at the far left and far
-   right. Phones keep the normal layout. */
-@media (min-width:800px) and (min-height:420px) and (orientation:landscape){
-  #game{max-width:none;width:100%}
+/* ===== SCORES COLUMN (desktop only) ===== */
+@media (min-width:900px) and (min-height:600px){
+  #scores{white-space:normal;overflow-x:hidden;overflow-y:auto;font-size:15px;padding:10px 12px}
+  #scores .sh{display:block;margin-bottom:6px;letter-spacing:1px}
+  #scores .sp{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid #333}
+  #scores .sp b{flex:none}
+
+  /* medium screens: scores get their own column on the left */
+  #game{max-width:1466px}
   #game.on{
-    display:grid;
-    grid-template-columns:210px var(--cw,480px) 350px;
+    grid-template-columns:150px minmax(0,1fr) 340px;
     grid-template-rows:auto minmax(0,1fr) auto;
-    gap:10px 16px;
-    justify-content:center;
   }
-  #top{grid-column:2;grid-row:1;height:64px}
-  #cell{display:flex;align-items:center;justify-content:center;grid-column:2;grid-row:2;min-width:0;min-height:260px}
-  #cwrap{flex:none}
-  #tools{grid-column:2;grid-row:3;flex-direction:column;align-items:stretch;gap:8px}
-  /* guessers: keep the tools' space (hidden) so the drawing box is the same size for everyone, in every phase */
-  #tools[style*="display: none"]{display:flex!important;visibility:hidden}
-  #log{grid-column:3;grid-row:1 / 4;height:auto;min-height:0;font-size:14px;padding-bottom:64px}
-  #game:has(#guess[style*="display: none"]) #log{padding-bottom:8px}
-  #guess{grid-column:3;grid-row:3;align-self:end;margin:0 8px 8px;width:auto;z-index:1}
-  /* scores: vertical list in the left column, full height */
+  #top,#cwrap,#tools{grid-column:2}
+  #log{grid-column:3;grid-row:1 / 3}
+  #guess{grid-column:3;grid-row:3}
+  #scores{grid-column:1;grid-row:2;align-self:start;max-height:100%}
+}
+
+/* wide screens: scores sit in the blank space left of the drawing,
+   so the drawing stays exactly where it was */
+@media (min-width:1650px) and (min-height:600px){
+  #game{max-width:1280px}
+  #game.on{
+    grid-template-columns:minmax(0,1fr) 340px;
+    grid-template-rows:auto minmax(0,1fr) auto;
+  }
+  #top,#cwrap,#tools{grid-column:1}
+  #log{grid-column:2;grid-row:1 / 3}
+  #guess{grid-column:2;grid-row:3}
   #scores{
-    grid-column:1;grid-row:1 / 4;align-self:stretch;
-    white-space:normal;overflow-x:hidden;overflow-y:auto;max-height:none;
-    font-size:15px;padding:12px 14px;
+    position:absolute;
+    right:calc(100% + 16px);
+    top:70px;
+    width:calc((100vw - 1280px) / 2 - 32px);
+    max-width:240px;
+    max-height:60%;
   }
-  #scores .sh{display:block;margin-bottom:8px;letter-spacing:1px}
-  #scores .sp{display:flex;align-items:center;gap:8px;margin:0;padding:9px 0;border-top:1px solid #333}
-  #scores .sp b{flex:none;margin-left:auto}
-  #hint{font-size:22px;white-space:nowrap;overflow:hidden}
-  #hint.choosing{font-size:15px;white-space:normal}
-  #top .card{min-width:0;overflow:hidden}
-  #time{width:60px;height:60px;font-size:26px}
-  .pal{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
-  .dot{width:30px;height:30px}
-  .tb{width:100%}
-  #cv{cursor:crosshair}
 }
 
 /* ---- settings / modal / themes ---- */
@@ -258,14 +254,11 @@ body{overflow:hidden}
 
 <div id="game" class="s">
  <div id="top"><div class="card" id="time">--</div><div class="card" style="flex:1"><div id="info" class="gr" style="font-size:12px"></div><div id="hint"></div></div></div>
- <div id="cell"><div id="cwrap"><canvas id="cv"></canvas><div id="eggs"></div>
+ <div id="cwrap"><canvas id="cv"></canvas><div id="eggs"></div>
   <div id="react"><button id="like">👍 0</button><button id="dis">👎 0</button><button id="taunt">💬</button><button id="egg">🥚</button></div>
-  <div id="tmwrap" style="position:absolute;top:6px;right:6px;display:none;align-items:center;gap:8px">
-   <span id="tnote" style="display:none;background:#000b;color:#fff;font-size:13px;font-weight:700;padding:5px 10px;border-radius:14px;white-space:nowrap"></span>
-   <button id="tmute" class="o" style="width:38px;height:38px;padding:0;border-radius:50%;font-size:18px">🔔</button>
-  </div>
+  <button id="tmute" class="o" style="position:absolute;top:6px;right:6px;display:none;padding:6px 10px;border-radius:20px;font-size:13px">🔔 Taunts on</button>
   <div id="toast" style="position:absolute;bottom:6px;left:6px;right:6px;text-align:center;font-weight:700;font-size:13px"></div>
-  <div id="tcap"></div><div id="pop"></div><div id="strip"></div><div class="ov" id="choose"></div><div class="ov" id="over"></div></div></div>
+  <div id="tcap"></div><div id="pop"></div><div id="strip"></div><div class="ov" id="choose"></div><div class="ov" id="over"></div></div>
  <div id="tools">
   <div class="pal" id="pal"></div>
   <div class="tb" id="tb"></div>
@@ -282,7 +275,6 @@ body{overflow:hidden}
   <div id="fsc"></div>
   <div id="faw"></div>
   <div id="fback" class="gr" style="text-align:center;margin-top:24px;font-size:15px"></div>
-  <button id="fagain" style="margin-top:12px">PLAY AGAIN</button>
   <button class="o" id="fleave" style="background:none;border:0;color:#bbb;margin-top:8px">← Back to menu</button>
  </div>
 </div>
@@ -304,7 +296,7 @@ const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 const pid = localStorage.pid || (localStorage.pid = 'w' + Math.random().toString(36).slice(2) + Date.now().toString(36));
 const PAL = ['#000000','#ffffff','#9e9e9e','#00ffff','#f44336','#ff9800','#ffeb3b','#4caf50','#2196f3','#9c27b0','#e91e63','#795548'];
 const S = {panel:'', reply:null, chat:[], pickKey:'', players:[], scores:{}, room:'', drawer:'', isDrawer:false, strokes:[], redo:[], live:null, color:'#000000', size:8,
-  tool:'pen', guessed:false, vote:'', eggsLeft:0, eggThrown:false, phase:'menu', canSkip:false, over:false, choosing:false, tauntsLeft:0, tauntSent:false, drawerMute:false};
+  tool:'pen', guessed:false, vote:'', eggsLeft:0, eggThrown:false, phase:'menu', canSkip:false, over:false, choosing:false, tauntsLeft:0, tauntSent:false, drawerMute:false, tauntBusy:false};
 let sound = localStorage.snd !== 'off', ac, finalTimer;
 
 // ---------- sound ----------
@@ -369,17 +361,17 @@ function throwAnim(d,k){
 // ---------- taunts (guessers only, same availability as eggs) ----------
 const TAUNTS=['Nice drawing!','Is that your best drawing?','Yeh kya hai?','Yeh kya dekhna parh raha hai?','Tumse na ho payega!','Shabash beta, bohot badiya!','Yeh kya bana diya tumne?','Kesay kesay log rehte hain yahan!','Kon hain ye log?'];
 const tauntsOn=()=>localStorage.taunts!=='off';
-let tauntAudio, tcapTimer;
+let tauntAudio, tcapTimer, tauntBusyTimer;
 // Optional audio files: taunts/taunt_1.mp3 ... taunts/taunt_12.mp3 next to index.html.
 // If a file is missing, a short beep plays instead.
 function tauntBeep(id){ const f=330+(id%6)*70; beep([[f,.09],[f*1.25,.09],[f*1.5,.16]]); }
 function playTaunt(id){ if(!sound)return; let done=false; const fb=()=>{ if(!done){ done=true; tauntBeep(id); } };
   try{ if(tauntAudio)tauntAudio.pause(); const a=tauntAudio=new Audio('taunts/taunt_'+id+'.mp3'); a.onerror=fb; a.play().catch(fb); }catch(e){ fb(); } }
-function openTaunts(){ if(S.isDrawer||S.over||S.choosing||S.tauntSent||S.tauntsLeft<=0)return;
+function openTaunts(){ if(S.isDrawer||S.over||S.choosing||S.tauntSent||S.tauntsLeft<=0||S.tauntBusy)return;
   modal('Send a taunt','<div class="gr" style="font-size:12px">One per drawing. Tease the drawing, not the person.</div>'+
     TAUNTS.map((t,i)=>`<div class="opt" data-i="${i+1}"><b>${esc(t)}</b></div>`).join(''),
     e=>{ const el=e.target.closest('[data-i]'); if(!el)return; closeModal();
-      if(S.isDrawer||S.over||S.choosing||S.tauntSent||S.tauntsLeft<=0)return;
+      if(S.isDrawer||S.over||S.choosing||S.tauntSent||S.tauntsLeft<=0||S.tauntBusy)return;
       S.tauntSent=true; S.tauntsLeft--; socket.emit('send_taunt',{id:+el.dataset.i}); updateUI(); }); }
 
 const ACH=[
@@ -458,7 +450,7 @@ socket.on('room_updated', d => { S.room=d.roomCode; S.pub=!!d.isPublic; S.player
 socket.on('score_update', d => { S.scores=d.scores; drawScores(); });
 socket.on('kicked', () => { S.room=''; show('menu'); alert('The host removed you from the room'); });
 socket.on('lobby_message', d => { S.chat.push(d); if(S.chat.length>200) S.chat.shift(); drawChat(); });
-socket.on('round_started', d => { clearInterval(finalTimer); stopFw(); S.strokes=[]; S.redo=[]; S.live=null; S.guessed=false; S.vote=''; S.eggThrown=false; S.tauntSent=false; S.drawerMute=false; $('tnote').style.display='none'; S.drawer=d.drawerName; S.isDrawer=d.drawerId===pid;
+socket.on('round_started', d => { clearInterval(finalTimer); stopFw(); S.strokes=[]; S.redo=[]; S.live=null; S.guessed=false; S.vote=''; S.eggThrown=false; S.tauntSent=false; S.drawerMute=false; S.tauntBusy=false; clearTimeout(tauntBusyTimer); S.drawer=d.drawerName; S.isDrawer=d.drawerId===pid;
   $('info').textContent=`Round ${d.currentRound}/${d.totalRounds}`; $('log').innerHTML=''; $('eggs').innerHTML=''; $('toast').textContent=''; show('game'); redraw(); });
 socket.on('word_choice_started', d => { clearInterval(finalTimer); stopFw(); S.choosing=true; S.over=false; S.isDrawer=d.drawerId===pid; S.canSkip=d.canSkip; S.eggsLeft=d.eggsLeft; S.drawer=d.drawerName;
   hideOv(); showChoose(d.words, d.choiceSeconds); setHint('',null); $('time').textContent='--'; setReact(0,0); updateUI();
@@ -482,11 +474,16 @@ socket.on('reaction_update', d => setReact(d.likes,d.dislikes));
 socket.on('reaction_made', d => { const t=$('toast'); t.style.color=d.type==='like'?'#4caf50':'#ff5252';
   t.textContent=`${d.playerName} ${d.type==='like'?'liked':'disliked'} the drawing`; setTimeout(()=>{t.textContent=''},3000); });
 socket.on('eggs_update', d => { S.eggsLeft=d.eggsLeft; updateUI(); });
-socket.on('taunts_update', d => { S.tauntsLeft=d.tauntsLeft||0; updateUI(); });
-socket.on('taunt_played', d => { if(!tauntsOn())return; if(S.isDrawer&&S.drawerMute)return;
+socket.on('taunts_update', d => { S.tauntsLeft=d.tauntsLeft||0; if(typeof d.tauntSent==='boolean') S.tauntSent=d.tauntSent; updateUI(); });
+socket.on('taunt_played', d => {
+  // Lock sending for everyone until this clip is finished.
+  S.tauntBusy=true; updateUI();
+  const ms=d.durationMs>0?d.durationMs:3000;
+  clearTimeout(tauntBusyTimer); tauntBusyTimer=setTimeout(()=>{ S.tauntBusy=false; updateUI(); },ms);
+  if(!tauntsOn())return; if(S.isDrawer&&S.drawerMute)return;
   const t=TAUNTS[(d.id||0)-1]; if(!t)return;
   const c=$('tcap'); c.innerHTML=`<span>🔊 ${esc(d.playerName)}: ${esc(t)}</span>`;
-  clearTimeout(tcapTimer); tcapTimer=setTimeout(()=>{ c.innerHTML=''; },3000); playTaunt(d.id); });
+  clearTimeout(tcapTimer); tcapTimer=setTimeout(()=>{ c.innerHTML=''; },ms); playTaunt(d.id); });
 socket.on('egg_thrown', d => {
   if(d.playerId===pid){ S.eggThrown=true; updateUI(); }
   const k=skinOf(d.skin);
@@ -598,16 +595,15 @@ $('rcode').onclick = async () => { const c=S.room; if(!c)return;
 $('start').onclick = () => { $('lerr').textContent='';
   socket.emit('start_game',{rounds:+$('rounds').value, roundTime:+$('rtime').value, choiceCount:+$('choices').value,
     customWords:$('custom').value.split(/[,\n]/).map(s=>s.trim()).filter(Boolean), customOnly:$('conly').checked}, r=>{ if(r&&!r.success) $('lerr').textContent=r.message; }); };
-$('fagain').onclick = () => { clearInterval(finalTimer); stopFw(); drawLobby(); show('lobby'); };
 $('leave').onclick = $('fleave').onclick = () => { socket.emit('leave_room'); S.room=''; S.chat=[]; setReply(null); clearInterval(finalTimer); stopFw(); show('menu'); };
 
 // ---------- game UI ----------
 function setHint(h, word){ const el=$('hint'); if(S.isDrawer&&word){ el.dataset.w=word; el.textContent=word; return; }
-  el.textContent = h ? h.split(' ').filter(Boolean).map(w=>[...w].join('\u00A0')+'\u00A0'+w.length).join('   ') : (S.choosing?`${S.drawer} is choosing a word…`:''); el.classList.toggle('choosing', !h && !!S.choosing); }
+  el.textContent = h ? h.split(' ').filter(Boolean).map(w=>[...w].join('\u00A0')+'\u00A0'+w.length).join('   ') : (S.choosing?`${S.drawer} is choosing a word…`:''); }
 function setReact(l,d){ $('like').textContent='👍 '+l; $('dis').textContent='👎 '+d; }
 function bubble(inner,mine,cls){ const l=$('log'); l.insertAdjacentHTML('beforeend',`<div class="bw${mine?' me':''}"><div class="bb ${cls||''}">${inner}</div></div>`); l.scrollTop=l.scrollHeight; }
 function sys(t){ const l=$('log'); l.insertAdjacentHTML('beforeend',`<div class="sys">${esc(t)}</div>`); l.scrollTop=l.scrollHeight; }
-function drawScores(){ $('scores').innerHTML='<b class="am sh">SCORES</b> '+S.players.slice().sort((a,b)=>(S.scores[b.id]||0)-(S.scores[a.id]||0)).map(p=>`<span class="sp">${esc(p.avatar||'🙂')} ${esc(p.name)} <b class="am">${S.scores[p.id]||0}</b></span>`).join(' '); }
+function drawScores(){ $('scores').innerHTML='<b class="am sh">SCORES</b> '+S.players.slice().sort((a,b)=>(S.scores[b.id]||0)-(S.scores[a.id]||0)).map(p=>`<span class="sp">${esc(p.avatar||'🙂')} ${esc(p.name)} <b class="am">${S.scores[p.id]||0}</b></span>`).join(' &nbsp; '); }
 function hideOv(){ $('choose').style.display='none'; $('over').style.display='none'; }
 let chTimer;
 function showChoose(words, secs){ const o=$('choose'); o.style.display='flex'; clearInterval(chTimer);
@@ -621,18 +617,15 @@ function updateUI(){
   $('guess').placeholder = S.isDrawer ? 'Chat 🔒 (only players who guessed)' : S.guessed ? 'Chat 🔒 (drawer & guessers only)' : 'Type your guess';
   const r=$('react'); r.style.display = (!S.isDrawer && !S.choosing && !S.over) ? 'flex' : 'none';
   $('egg').style.display = (S.eggsLeft>0 && !S.eggThrown) ? '' : 'none'; $('egg').textContent = skin().emoji;
-  $('taunt').style.display = (tauntsOn() && S.tauntsLeft>0 && !S.tauntSent) ? '' : 'none';
-  const tm=$('tmute'); $('tmwrap').style.display = (S.isDrawer && !S.choosing && !S.over) ? 'flex' : 'none';
-  tm.textContent = S.drawerMute ? '🔕' : '🔔'; tm.style.background = S.drawerMute ? '#ff6b6b' : ''; tm.style.color = S.drawerMute ? '#000' : '';
+  $('taunt').style.display = (tauntsOn() && S.tauntsLeft>0 && !S.tauntSent) ? '' : 'none'; $('taunt').style.opacity = S.tauntBusy ? .4 : 1;
+  const tm=$('tmute'); tm.style.display = (S.isDrawer && !S.choosing && !S.over) ? '' : 'none';
+  tm.textContent = S.drawerMute ? '🔕 Taunts off' : '🔔 Taunts on'; tm.style.background = S.drawerMute ? '#ff6b6b' : ''; tm.style.color = S.drawerMute ? '#000' : '';
   $('like').style.opacity = S.vote==='dislike'?.4:1; $('dis').style.opacity = S.vote==='like'?.4:1; }
 $('like').onclick = () => { if(!S.vote){ S.vote='like'; socket.emit('react',{type:'like'}); updateUI(); } };
 $('dis').onclick = () => { if(!S.vote){ S.vote='dislike'; socket.emit('react',{type:'dislike'}); updateUI(); } };
 $('egg').onclick = () => socket.emit('throw_egg', {skin: skin().id});
 $('taunt').onclick = openTaunts;
-let tnoteTimer;
-$('tmute').onclick = () => { S.drawerMute=!S.drawerMute; updateUI();
-  const n=$('tnote'); n.textContent = S.drawerMute ? 'Taunts turned off' : 'Taunts turned on'; n.style.display='block';
-  clearTimeout(tnoteTimer); tnoteTimer=setTimeout(()=>{ n.style.display='none'; },2000); };
+$('tmute').onclick = () => { S.drawerMute=!S.drawerMute; updateUI(); };
 $('guess').onkeydown = e => { if(e.key==='Enter'){ const t=e.target.value.trim(); if(t){ socket.emit('player_guess',{guess:t}); e.target.value=''; } } };
 
 // Drawer: tap the messages box to start chatting (no permanent text box)
@@ -675,22 +668,8 @@ renderTb();
 
 // ---------- canvas ----------
 const cv=$('cv'), cx=cv.getContext('2d');
-// Desktop: the drawing box may be a bit wider or taller than a phone's, but is
-// kept between MIN_A and MAX_A (width : height) so drawings never look
-// squashed. Spare room is left empty beside the scores and chat.
-const MIN_A = 0.8, MAX_A = 1.1, DESK = matchMedia('(min-width:800px) and (min-height:420px) and (orientation:landscape)');
-function fit(){ const w=$('cwrap'), g=$('game');
-  if(DESK.matches){
-    const c=$('cell').getBoundingClientRect(), gs=getComputedStyle(g);
-    const availH=c.height, availW=g.clientWidth-parseFloat(gs.paddingLeft)-parseFloat(gs.paddingRight)-210-350-32;
-    if(availH>=100 && availW>=100){
-      let cw=Math.min(availW, availH*MAX_A), ch=availH;      // not wider than MAX_A
-      if(cw/ch<MIN_A) ch=cw/MIN_A;                            // not taller than MIN_A
-      cw=Math.floor(cw); ch=Math.floor(ch);
-      if(w.style.width!==cw+'px'||w.style.height!==ch+'px'){ w.style.width=cw+'px'; w.style.height=ch+'px'; g.style.setProperty('--cw',cw+'px'); } } }
-  else { w.style.width=w.style.height=''; g.style.removeProperty('--cw'); }
-  const r=w.getBoundingClientRect(); if(r.width<1)return; if(cv.width!==Math.round(r.width)||cv.height!==Math.round(r.height)){ cv.width=Math.round(r.width); cv.height=Math.round(r.height); } redraw(); }
-addEventListener('resize', fit); if(window.ResizeObserver) new ResizeObserver(()=>{ if(S.phase==='game') fit(); }).observe($('cell')); addEventListener('orientationchange', ()=>setTimeout(fit,300));
+function fit(){ const r=cv.parentElement.getBoundingClientRect(); if(r.width<1)return; cv.width=Math.round(r.width); cv.height=Math.round(r.height); redraw(); }
+addEventListener('resize', fit); if(window.ResizeObserver) new ResizeObserver(()=>{ if(S.phase==='game') fit(); }).observe($('cwrap')); addEventListener('orientationchange', ()=>setTimeout(fit,300));
 function floodFill(x,y,hex){ const w=cv.width,h=cv.height; if(x<0||y<0||x>=w||y>=h)return;
   const im=cx.getImageData(0,0,w,h), d=im.data, c=parseInt(hex.slice(1),16), R=c>>16, G=c>>8&255, B=c&255, i0=(y*w+x)*4, tr=d[i0], tg=d[i0+1], tb=d[i0+2];
   if(Math.abs(tr-R)+Math.abs(tg-G)+Math.abs(tb-B)<3)return;
