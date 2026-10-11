@@ -185,6 +185,40 @@ body{overflow:hidden}
   #cv{cursor:crosshair}
 }
 
+/* ===== DESKTOP LOBBY LAYOUT: players | room + settings | chat =====
+   Same media query and the same three columns as the game screen
+   (210px | middle | 350px), so the lobby and the game line up.
+   Phones keep the normal layout. */
+@media (min-width:800px) and (min-height:420px) and (orientation:landscape){
+  #lobby{max-width:none;width:100%;overflow-y:auto}
+  #lobby.on{
+    display:grid;
+    grid-template-columns:210px 480px 350px;
+    grid-template-rows:auto minmax(0,1fr) auto auto;
+    gap:10px 16px;
+    justify-content:center;
+  }
+  /* middle: room code, host settings (or waiting text), leave button */
+  #lhead{grid-column:2;grid-row:1}
+  #host,#wait{grid-column:2;grid-row:2;min-height:0}
+  #host{overflow-y:auto}
+  #wait{align-self:start;padding-top:8px}
+  #leave{grid-column:2;grid-row:4}
+  /* left: players as a vertical list, full height (like the scores) */
+  #plist{
+    grid-column:1;grid-row:1 / 5;align-self:stretch;
+    max-height:none;overflow-x:hidden;overflow-y:auto;
+    padding:12px 14px;font-size:15px;
+  }
+  #plist::before{content:"PLAYERS";display:block;margin-bottom:8px;letter-spacing:1px;font-weight:700;color:var(--amber)}
+  #plist .pl{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid #333}
+  #plist .pl b{margin-left:auto}
+  /* right: chat, reply bar, message box */
+  #chat{grid-column:3;grid-row:1 / 3;min-height:0}
+  #rbar{grid-column:3;grid-row:3}
+  #msg{grid-column:3;grid-row:4}
+}
+
 /* ---- settings / modal / themes ---- */
 #menu{position:relative}
 #gear{position:absolute;top:calc(10px + env(safe-area-inset-top));left:14px;background:none;border:0;color:var(--amber);padding:8px;font-size:14px}
@@ -275,11 +309,8 @@ body{overflow:hidden}
   <div class="pod" id="pod"></div>
   <div id="fsc"></div>
   <div id="faw"></div>
- 
-<button id="fplay" style="margin-top:20px;width:100%">▶ PLAY AGAIN</button>
-<div id="fback" class="gr" style="text-align:center;margin-top:14px;font-size:15px"></div>
-<button class="o" id="fleave" style="background:none;border:0;color:#bbb;margin-top:8px">← Back to menu</button>
-
+  <div id="fback" class="gr" style="text-align:center;margin-top:24px;font-size:15px"></div>
+  <button class="o" id="fleave" style="background:none;border:0;color:#bbb;margin-top:8px">← Back to menu</button>
  </div>
 </div>
 
@@ -363,7 +394,7 @@ function throwAnim(d,k){
   const a=f.animate(frames,{duration:THROW_MS,easing:'linear'}); a.onfinish=()=>f.remove(); }
 
 // ---------- taunts (guessers only, same availability as eggs) ----------
-const TAUNTS=['Nice drawing!','Is that your best drawing?','Yeh kya hai?','Yeh kya dekhna parh raha hai?','Tumse na ho payega!','Shabash beta, bohot badiya!','Yeh kya bana diya tumne?','Kesay kesay log rehte hain yaar!','Kon hain ye log?'];
+const TAUNTS=['Nice drawing!','Is that your best drawing?','Yeh kya hai?','Yeh kya dekhna parh raha hai?','Tumse na ho payega!','Shabash beta, bohot badiya!','Yeh kya bana diya tumne?','Kesay kesay log rehte hain yahan!','Kon hain ye log?'];
 const tauntsOn=()=>localStorage.taunts!=='off';
 let tauntAudio, tcapTimer, tauntBusyTimer;
 // Optional audio files: taunts/taunt_1.mp3 ... taunts/taunt_12.mp3 next to index.html.
@@ -529,17 +560,6 @@ socket.on('game_finished', d => {
   finalTimer=setInterval(()=>{ s--; $('fback').textContent=`Back to lobby in ${s}s...`; if(s<=0){ clearInterval(finalTimer); stopFw(); drawLobby(); show('lobby'); } },1000);
 });
 
-
-$('fplay').onclick = () => {
-  clearInterval(finalTimer);
-  stopFw();
-
-  $('fback').textContent = '';
-  drawLobby();
-  show('lobby');
-};
-
-  
 // ---------- menu ----------
 $('name').value = $('name2').value = localStorage.name || '';
 const q = new URLSearchParams(location.search).get('room'); if(q){ $('code').value=q.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6); show('joinscr'); }
