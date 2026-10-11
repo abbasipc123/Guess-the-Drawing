@@ -23,6 +23,7 @@ button.o{background:#2a2a2a;color:#fff;border:1px solid #666}button:disabled{opa
 .err{color:var(--red);text-align:center;min-height:18px}
 .am{color:var(--amber)}.gr{color:#999}
 #ban{position:fixed;top:0;left:0;right:0;background:#b71c1c;text-align:center;padding:5px;font-weight:700;display:none;z-index:9}
+#cell{display:contents}
 #cwrap{position:relative;flex:1;min-height:0;background:#fff;border-radius:12px;overflow:hidden}
 #cv{width:100%;height:100%;display:block;touch-action:none}
 .ov{position:absolute;inset:0;background:#000b;display:none;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:16px;text-align:center}
@@ -48,6 +49,7 @@ button.o{background:#2a2a2a;color:#fff;border:1px solid #666}button:disabled{opa
 #log:empty::before{content:"Type your guess below 👇";display:block;text-align:center;padding-top:34px;color:#777;font-size:13px}
 #log.dr:empty::before{content:"Tap to chat 🔒 - Tap again to hide Text Box"}
 #scores{font-size:12px;overflow-x:auto;white-space:nowrap}
+#scores .sp{margin-right:14px}
 #fw{position:fixed;inset:0;pointer-events:none;z-index:5}
 .pl{padding:5px 0}
 .bw{display:flex;flex-direction:column;margin-bottom:6px}.bw.me{align-items:flex-end}
@@ -134,7 +136,7 @@ body{overflow:hidden}
   #scores{grid-column:1 / -1;grid-row:4;white-space:normal;max-height:84px;overflow:auto;font-size:14px}
 
   /* bigger hint, timer and tools */
-  #hint{font-size:26px}
+  #hint{font-size:20px}
   #time{width:60px;height:60px;font-size:26px}
   .pal{flex:1;flex-wrap:wrap;overflow:visible}
   .dot{width:34px;height:34px}
@@ -144,44 +146,43 @@ body{overflow:hidden}
   #final{max-width:720px}
 }
 
-/* ===== SCORES COLUMN (desktop only) ===== */
-@media (min-width:900px) and (min-height:600px){
-  #scores{white-space:normal;overflow-x:hidden;overflow-y:auto;font-size:15px;padding:10px 12px}
-  #scores .sh{display:block;margin-bottom:6px;letter-spacing:1px}
-  #scores .sp{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid #333}
-  #scores .sp b{flex:none}
-
-  /* medium screens: scores get their own column on the left */
-  #game{max-width:1466px}
+/* ===== DESKTOP GAME LAYOUT: scores | drawing | chat =====
+   Any landscape window at least 800px wide. The three parts sit together in
+   the middle of the screen; spare room is left empty at the far left and far
+   right. Phones keep the normal layout. */
+@media (min-width:800px) and (min-height:420px) and (orientation:landscape){
+  #game{max-width:none;width:100%}
   #game.on{
-    grid-template-columns:150px minmax(0,1fr) 340px;
+    display:grid;
+    grid-template-columns:210px var(--cw,480px) 350px;
     grid-template-rows:auto minmax(0,1fr) auto;
+    gap:10px 16px;
+    justify-content:center;
   }
-  #top,#cwrap,#tools{grid-column:2}
-  #log{grid-column:3;grid-row:1 / 3}
+  #top{grid-column:2;grid-row:1;height:64px}
+  #cell{display:flex;align-items:center;justify-content:center;grid-column:2;grid-row:2;min-width:0;min-height:260px}
+  #cwrap{flex:none}
+  #tools{grid-column:2;grid-row:3;flex-direction:column;align-items:stretch;gap:8px}
+  /* guessers: keep the tools' space (hidden) so the drawing box is the same size for everyone, in every phase */
+  #tools[style*="display: none"]{display:flex!important;visibility:hidden}
+  #log{grid-column:3;grid-row:1 / 3;height:auto;min-height:0;font-size:14px}
   #guess{grid-column:3;grid-row:3}
-  #scores{grid-column:1;grid-row:2;align-self:start;max-height:100%}
-}
-
-/* wide screens: scores sit in the blank space left of the drawing,
-   so the drawing stays exactly where it was */
-@media (min-width:1650px) and (min-height:600px){
-  #game{max-width:1280px}
-  #game.on{
-    grid-template-columns:minmax(0,1fr) 340px;
-    grid-template-rows:auto minmax(0,1fr) auto;
-  }
-  #top,#cwrap,#tools{grid-column:1}
-  #log{grid-column:2;grid-row:1 / 3}
-  #guess{grid-column:2;grid-row:3}
+  /* scores: vertical list in the left column, full height */
   #scores{
-    position:absolute;
-    right:calc(100% + 16px);
-    top:70px;
-    width:calc((100vw - 1280px) / 2 - 32px);
-    max-width:240px;
-    max-height:60%;
+    grid-column:1;grid-row:1 / 4;align-self:stretch;
+    white-space:normal;overflow-x:hidden;overflow-y:auto;max-height:none;
+    font-size:15px;padding:12px 14px;
   }
+  #scores .sh{display:block;margin-bottom:8px;letter-spacing:1px}
+  #scores .sp{display:flex;align-items:center;gap:8px;margin:0;padding:9px 0;border-top:1px solid #333}
+  #scores .sp b{flex:none;margin-left:auto}
+  #hint{font-size:22px;white-space:nowrap;overflow:hidden}
+  #top .card{min-width:0;overflow:hidden}
+  #time{width:60px;height:60px;font-size:26px}
+  .pal{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
+  .dot{width:30px;height:30px}
+  .tb{width:100%}
+  #cv{cursor:crosshair}
 }
 
 /* ---- settings / modal / themes ---- */
@@ -254,11 +255,11 @@ body{overflow:hidden}
 
 <div id="game" class="s">
  <div id="top"><div class="card" id="time">--</div><div class="card" style="flex:1"><div id="info" class="gr" style="font-size:12px"></div><div id="hint"></div></div></div>
- <div id="cwrap"><canvas id="cv"></canvas><div id="eggs"></div>
+ <div id="cell"><div id="cwrap"><canvas id="cv"></canvas><div id="eggs"></div>
   <div id="react"><button id="like">👍 0</button><button id="dis">👎 0</button><button id="taunt">💬</button><button id="egg">🥚</button></div>
   <button id="tmute" class="o" style="position:absolute;top:6px;right:6px;display:none;padding:6px 10px;border-radius:20px;font-size:13px">🔔 Taunts on</button>
   <div id="toast" style="position:absolute;bottom:6px;left:6px;right:6px;text-align:center;font-weight:700;font-size:13px"></div>
-  <div id="tcap"></div><div id="pop"></div><div id="strip"></div><div class="ov" id="choose"></div><div class="ov" id="over"></div></div>
+  <div id="tcap"></div><div id="pop"></div><div id="strip"></div><div class="ov" id="choose"></div><div class="ov" id="over"></div></div></div>
  <div id="tools">
   <div class="pal" id="pal"></div>
   <div class="tb" id="tb"></div>
@@ -603,7 +604,7 @@ function setHint(h, word){ const el=$('hint'); if(S.isDrawer&&word){ el.dataset.
 function setReact(l,d){ $('like').textContent='👍 '+l; $('dis').textContent='👎 '+d; }
 function bubble(inner,mine,cls){ const l=$('log'); l.insertAdjacentHTML('beforeend',`<div class="bw${mine?' me':''}"><div class="bb ${cls||''}">${inner}</div></div>`); l.scrollTop=l.scrollHeight; }
 function sys(t){ const l=$('log'); l.insertAdjacentHTML('beforeend',`<div class="sys">${esc(t)}</div>`); l.scrollTop=l.scrollHeight; }
-function drawScores(){ $('scores').innerHTML='<b class="am sh">SCORES</b> '+S.players.slice().sort((a,b)=>(S.scores[b.id]||0)-(S.scores[a.id]||0)).map(p=>`<span class="sp">${esc(p.avatar||'🙂')} ${esc(p.name)} <b class="am">${S.scores[p.id]||0}</b></span>`).join(' &nbsp; '); }
+function drawScores(){ $('scores').innerHTML='<b class="am sh">SCORES</b> '+S.players.slice().sort((a,b)=>(S.scores[b.id]||0)-(S.scores[a.id]||0)).map(p=>`<span class="sp">${esc(p.avatar||'🙂')} ${esc(p.name)} <b class="am">${S.scores[p.id]||0}</b></span>`).join(' '); }
 function hideOv(){ $('choose').style.display='none'; $('over').style.display='none'; }
 let chTimer;
 function showChoose(words, secs){ const o=$('choose'); o.style.display='flex'; clearInterval(chTimer);
@@ -668,8 +669,22 @@ renderTb();
 
 // ---------- canvas ----------
 const cv=$('cv'), cx=cv.getContext('2d');
-function fit(){ const r=cv.parentElement.getBoundingClientRect(); if(r.width<1)return; cv.width=Math.round(r.width); cv.height=Math.round(r.height); redraw(); }
-addEventListener('resize', fit); if(window.ResizeObserver) new ResizeObserver(()=>{ if(S.phase==='game') fit(); }).observe($('cwrap')); addEventListener('orientationchange', ()=>setTimeout(fit,300));
+// Desktop: the drawing box may be a bit wider or taller than a phone's, but is
+// kept between MIN_A and MAX_A (width : height) so drawings never look
+// squashed. Spare room is left empty beside the scores and chat.
+const MIN_A = 0.8, MAX_A = 1.1, DESK = matchMedia('(min-width:800px) and (min-height:420px) and (orientation:landscape)');
+function fit(){ const w=$('cwrap'), g=$('game');
+  if(DESK.matches){
+    const c=$('cell').getBoundingClientRect(), gs=getComputedStyle(g);
+    const availH=c.height, availW=g.clientWidth-parseFloat(gs.paddingLeft)-parseFloat(gs.paddingRight)-210-350-32;
+    if(availH>=100 && availW>=100){
+      let cw=Math.min(availW, availH*MAX_A), ch=availH;      // not wider than MAX_A
+      if(cw/ch<MIN_A) ch=cw/MIN_A;                            // not taller than MIN_A
+      cw=Math.floor(cw); ch=Math.floor(ch);
+      if(w.style.width!==cw+'px'||w.style.height!==ch+'px'){ w.style.width=cw+'px'; w.style.height=ch+'px'; g.style.setProperty('--cw',cw+'px'); } } }
+  else { w.style.width=w.style.height=''; g.style.removeProperty('--cw'); }
+  const r=w.getBoundingClientRect(); if(r.width<1)return; if(cv.width!==Math.round(r.width)||cv.height!==Math.round(r.height)){ cv.width=Math.round(r.width); cv.height=Math.round(r.height); } redraw(); }
+addEventListener('resize', fit); if(window.ResizeObserver){ const ro=new ResizeObserver(()=>{ if(S.phase==='game') fit(); }); ro.observe($('cell')); ro.observe($('cwrap')); } addEventListener('orientationchange', ()=>setTimeout(fit,300));
 function floodFill(x,y,hex){ const w=cv.width,h=cv.height; if(x<0||y<0||x>=w||y>=h)return;
   const im=cx.getImageData(0,0,w,h), d=im.data, c=parseInt(hex.slice(1),16), R=c>>16, G=c>>8&255, B=c&255, i0=(y*w+x)*4, tr=d[i0], tg=d[i0+1], tb=d[i0+2];
   if(Math.abs(tr-R)+Math.abs(tg-G)+Math.abs(tb-B)<3)return;
