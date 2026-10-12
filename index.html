@@ -219,6 +219,16 @@ body{overflow:hidden}
   #msg{grid-column:3;grid-row:4}
 }
 
+/* hold the egg button to pick a skin (guessers) */
+#egg{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+#skpick{position:absolute;top:46px;right:6px;display:none;gap:6px;background:#212121f0;border-radius:14px;padding:8px;z-index:6}
+#skpick button{width:44px;height:44px;padding:0;border-radius:10px;font-size:24px;background:#2a2a2a;border:1px solid #666;color:#fff}
+#skpick button.sel{border:2px solid var(--amber)}
+#skpick button.lk{opacity:.35}
+
+/* color list: one row that scrolls sideways (never wraps) on every screen */
+.pal{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:4px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+
 /* ---- settings / modal / themes ---- */
 #menu{position:relative}
 #gear{position:absolute;top:calc(10px + env(safe-area-inset-top));left:14px;background:none;border:0;color:var(--amber);padding:8px;font-size:14px}
@@ -290,7 +300,8 @@ body{overflow:hidden}
 <div id="game" class="s">
  <div id="top"><div class="card" id="time">--</div><div class="card" style="flex:1"><div id="info" class="gr" style="font-size:12px"></div><div id="hint"></div></div></div>
  <div id="cell"><div id="cwrap"><canvas id="cv"></canvas><div id="eggs"></div>
-  <div id="react"><button id="like">👍 0</button><button id="dis">👎 0</button><button id="taunt">💬</button><button id="egg">🥚</button></div>
+  <div id="react"><button id="like">👍 0</button><button id="dis">👎 0</button><button id="taunt">💬</button><button id="egg" title="Hold to change skin">🥚</button></div>
+  <div id="skpick"></div>
   <button id="tmute" class="o" style="position:absolute;top:6px;right:6px;display:none;padding:6px 10px;border-radius:20px;font-size:13px">🔔 Taunts on</button>
   <div id="toast" style="position:absolute;bottom:6px;left:6px;right:6px;text-align:center;font-weight:700;font-size:13px"></div>
   <div id="tcap"></div><div id="pop"></div><div id="strip"></div><div class="ov" id="choose"></div><div class="ov" id="over"></div></div></div>
@@ -310,6 +321,7 @@ body{overflow:hidden}
   <div id="fsc"></div>
   <div id="faw"></div>
   <div id="fback" class="gr" style="text-align:center;margin-top:24px;font-size:15px"></div>
+  <button id="fagain" style="margin-top:12px">PLAY AGAIN</button>
   <button class="o" id="fleave" style="background:none;border:0;color:#bbb;margin-top:8px">← Back to menu</button>
  </div>
 </div>
@@ -329,7 +341,8 @@ const SERVER = "https://guess-the-drawing-server.onrender.com";
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const pid = localStorage.pid || (localStorage.pid = 'w' + Math.random().toString(36).slice(2) + Date.now().toString(36));
-const PAL = ['#000000','#ffffff','#9e9e9e','#00ffff','#f44336','#ff9800','#ffeb3b','#4caf50','#2196f3','#9c27b0','#e91e63','#795548'];
+const PAL = ['#000000','#ffffff','#9e9e9e','#00ffff','#f44336','#ff9800','#ffeb3b','#4caf50','#2196f3','#9c27b0','#e91e63','#795548',
+  '#424242','#d9d9d9','#b71c1c','#ffd700','#ffcc99','#cddc39','#1b5e20','#009688','#0d47a1','#81d4fa','#ff80ab','#4e342e'];
 const S = {panel:'', reply:null, chat:[], pickKey:'', players:[], scores:{}, room:'', drawer:'', isDrawer:false, strokes:[], redo:[], live:null, color:'#000000', size:8,
   tool:'pen', guessed:false, vote:'', eggsLeft:0, eggThrown:false, phase:'menu', canSkip:false, over:false, choosing:false, tauntsLeft:0, tauntSent:false, drawerMute:false, tauntBusy:false};
 let sound = localStorage.snd !== 'off', ac, finalTimer;
@@ -433,6 +446,9 @@ $('mx').onclick=closeModal; $('modal').onclick=e=>{ if(e.target.id==='modal') cl
 
 function openAvatar(){ modal('Choose your avatar','<div class="av">'+AVATARS.map(a=>`<span data-a="${a}" class="${a===S.avatar?'sel':''}">${a}</span>`).join('')+'</div>',
   e=>{ const a=e.target.dataset.a; if(!a)return; S.avatar=localStorage.avatar=a; closeModal(); renderSettings(); }); }
+function openName(){ modal('Change name','<input id="nn" maxlength="20" placeholder="Your name" autocomplete="off" value="'+esc(localStorage.name||'')+'"><div class="gr" style="font-size:12px">Used the next time you join a room.</div><button id="nsave">SAVE</button>',
+  e=>{ if(e.target.id!=='nsave')return; const v=$('nn').value.trim(); if(!v)return; localStorage.name=v; $('name').value=$('name2').value=v; closeModal(); renderSettings(); });
+  setTimeout(()=>{ const i=$('nn'); if(i){ i.focus(); i.select(); } },50); }
 function openTheme(){ modal('Themes', THEMES.map(t=>{ const ok=true, sel=theme().id===t.id;
   return `<div class="opt${sel?' sel':''}${ok?'':' lock'}" data-t="${ok?t.id:''}" style="background:${t.panel};border-color:${sel?t.accent:'#888'}"><i class="sw" style="background:${t.accent}"></i><div style="flex:1"><b style="color:${ok?'#fff':'#888'}">${t.name}</b>${ok?'':`<div class="gr" style="font-size:12px">🔒 ${t.txt}</div>`}</div>${sel?`<b style="color:${t.accent};font-size:20px">✓</b>`:''}</div>`; }).join(''),
   e=>{ const el=e.target.closest('[data-t]'); if(!el||!el.dataset.t)return; localStorage.theme=el.dataset.t; applyTheme(); renderSettings(); openTheme(); }); }
@@ -447,13 +463,13 @@ function openAch(){ modal(`Achievements ${achDone()}/${ACH.length}`, ACH.map(a=>
 
 const srow=(ic,t,v,id)=>`<div class="sr" data-r="${id}"><span class="si">${ic}</span><b class="st">${t}</b><span class="gr">${v}</span><span class="gr">›</span></div>`;
 function renderSettings(){ $('srows').innerHTML =
-  srow(S.avatar,'Avatar','','avatar') + srow(sound?'🔊':'🔇','Sound',sound?'ON':'OFF','sound') + srow('💬','Taunts',tauntsOn()?'ON':'OFF','taunts') +
+  srow(S.avatar,'Avatar','','avatar') + srow('✏️','Change name',esc(localStorage.name||'—'),'name') + srow(sound?'🔊':'🔇','Sound',sound?'ON':'OFF','sound') + srow('💬','Taunts',tauntsOn()?'ON':'OFF','taunts') +
   srow('🎨','Theme',theme().name,'theme') + srow(skin().emoji,'Egg skin',skin().name,'skin') +
   srow('📊','My stats','','stats') + srow('🏆','Achievements',`${achDone()}/${ACH.length}`,'ach'); }
 $('srows').onclick = e => { const el=e.target.closest('[data-r]'); if(!el)return; const r=el.dataset.r;
   if(r==='sound'){ sound=!sound; localStorage.snd=sound?'on':'off'; renderSettings(); }
   else if(r==='taunts'){ localStorage.taunts=tauntsOn()?'off':'on'; renderSettings(); }
-  else if(r==='avatar') openAvatar(); else if(r==='theme') openTheme(); else if(r==='skin') openSkin();
+  else if(r==='name') openName(); else if(r==='avatar') openAvatar(); else if(r==='theme') openTheme(); else if(r==='skin') openSkin();
   else if(r==='stats') openStats(); else if(r==='ach') openAch(); };
 $('gear').onclick = () => { renderSettings(); show('settings'); };
 $('sback').onclick = () => show('menu');
@@ -630,6 +646,7 @@ $('rcode').onclick = async () => { const c=S.room; if(!c)return;
 $('start').onclick = () => { $('lerr').textContent='';
   socket.emit('start_game',{rounds:+$('rounds').value, roundTime:+$('rtime').value, choiceCount:+$('choices').value,
     customWords:$('custom').value.split(/[,\n]/).map(s=>s.trim()).filter(Boolean), customOnly:$('conly').checked}, r=>{ if(r&&!r.success) $('lerr').textContent=r.message; }); };
+$('fagain').onclick = () => { clearInterval(finalTimer); stopFw(); drawLobby(); show('lobby'); };
 $('leave').onclick = $('fleave').onclick = () => { socket.emit('leave_room'); S.room=''; S.chat=[]; setReply(null); clearInterval(finalTimer); stopFw(); show('menu'); };
 
 // ---------- game UI ----------
@@ -658,7 +675,21 @@ function updateUI(){
   $('like').style.opacity = S.vote==='dislike'?.4:1; $('dis').style.opacity = S.vote==='like'?.4:1; }
 $('like').onclick = () => { if(!S.vote){ S.vote='like'; socket.emit('react',{type:'like'}); updateUI(); } };
 $('dis').onclick = () => { if(!S.vote){ S.vote='dislike'; socket.emit('react',{type:'dislike'}); updateUI(); } };
-$('egg').onclick = () => socket.emit('throw_egg', {skin: skin().id});
+// Tap the egg button to throw; hold it to pick another skin (only unlocked skins can be chosen).
+let skHold, skHeld=false;
+function renderSkinPick(){ $('skpick').innerHTML=SKINS.map(k=>`<button data-k="${k.id}" title="${esc(k.name)}" class="${skin().id===k.id?'sel':''}${k.ok()?'':' lk'}">${k.emoji}</button>`).join(''); }
+function closeSkinPick(){ $('skpick').style.display='none'; }
+const eggBtn=$('egg');
+eggBtn.addEventListener('pointerdown',()=>{ skHeld=false; clearTimeout(skHold); skHold=setTimeout(()=>{ skHeld=true; renderSkinPick(); $('skpick').style.display='flex'; },450); });
+['pointerup','pointerleave','pointercancel'].forEach(t=>eggBtn.addEventListener(t,()=>clearTimeout(skHold)));
+eggBtn.addEventListener('contextmenu',e=>e.preventDefault());
+$('skpick').onclick = e => { const b=e.target.closest('[data-k]'); if(!b)return; const k=skinOf(b.dataset.k);
+  if(!k.ok()){ const t=$('toast'); t.style.color='#ffc107'; t.textContent='🔒 '+k.txt; setTimeout(()=>{ t.textContent=''; },2000); return; }
+  localStorage.skin=k.id; updateUI(); closeSkinPick(); };
+addEventListener('pointerdown',e=>{ if($('skpick').style.display==='flex' && !e.target.closest('#skpick,#egg')) closeSkinPick(); });
+$('egg').onclick = () => { if(skHeld){ skHeld=false; return; } closeSkinPick();
+  if(!localStorage.skhint){ localStorage.skhint='1'; const t=$('toast'); t.style.color='#ffc107'; t.textContent='Tip: hold the egg button to change its skin'; setTimeout(()=>{ t.textContent=''; },3500); }
+  socket.emit('throw_egg', {skin: skin().id}); };
 $('taunt').onclick = openTaunts;
 $('tmute').onclick = () => { S.drawerMute=!S.drawerMute; updateUI(); };
 $('guess').onkeydown = e => { if(e.key==='Enter'){ const t=e.target.value.trim(); if(t){ socket.emit('player_guess',{guess:t}); e.target.value=''; } } };
@@ -674,6 +705,8 @@ $('guess').onblur = () => { if(!S.isDrawer) return; setTimeout(()=>{ const g=$('
 // tools
 $('pal').innerHTML = PAL.map(c=>`<div class="dot${c===S.color?' sel':''}" data-c="${c}" style="background:${c}"></div>`).join('');
 $('pal').onclick = e => { const c=e.target.dataset.c; if(!c)return; S.color=c; S.panel=''; renderTb(); document.querySelectorAll('.dot').forEach(d=>d.classList.toggle('sel',d.dataset.c===c)); };
+// Mouse wheel scrolls the color row sideways (desktop)
+$('pal').addEventListener('wheel', e => { if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){ $('pal').scrollLeft+=e.deltaY; e.preventDefault(); } }, {passive:false});
 const SYM={pen:'<span style="color:#42a5f5">✎</span>',tri:'△',sq:'□',cir:'○'}, SIZES=[4,8,14,22,32];
 const sdot=z=>`<i style="display:block;border-radius:50%;background:#fff;width:${z}px;height:${z}px"></i>`;
 function friedEgg(){ let d=''; for(let i=0;i<8;i++){ const a=Math.random()*6.283, r=27+Math.random()*20, x=50+Math.cos(a)*r, y=50+Math.sin(a)*r;
