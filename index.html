@@ -592,7 +592,7 @@ $('join').onclick = () => { const c=$('code').value.trim(); if(c.length!==6){ $(
 // ---------- lobby ----------
 function drawLobby(){
   $('rcode').textContent=S.room; const m=me(), host=!!(m&&m.isHost);
-  $('plist').innerHTML=S.players.map(p=>`<div class="pl" data-id="${p.id}">${esc(p.avatar||'🙂')} <span style="color:${p.connected?'#fff':'#777'}">${esc(p.name)}${p.connected?'':' (reconnecting…)'}</span>${p.isHost?' <b class="am" style="float:right;font-size:11px">HOST</b>':''}</div>`).join('');
+  $('plist').innerHTML=S.players.slice().sort((a,b)=>(b.wins||0)-(a.wins||0)).map(p=>`<div class="pl" data-id="${p.id}">${esc(p.avatar||'🙂')} <span style="color:${p.connected?'#fff':'#777'}">${esc(p.name)}${p.connected?'':' (reconnecting…)'}</span> <b style="font-size:13px;color:${p.wins>0?'var(--amber)':'#777'}">🏆 ${p.wins||0}</b>${p.isHost?' <b class="am" style="float:right;font-size:11px">HOST</b>':''}</div>`).join('');
   $('host').style.display=host?'flex':'none'; $('wait').style.display=host?'none':'block';
   $('start').disabled = S.players.filter(p=>p.connected).length<2; }
 $('plist').onclick = e => { const el=e.target.closest('.pl'); const m=me(); if(!el||!m||!m.isHost||el.dataset.id===pid)return;
