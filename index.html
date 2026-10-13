@@ -266,6 +266,41 @@ body{overflow:hidden}
 /* color list: one row that scrolls sideways (never wraps) on every screen */
 .pal{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:4px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
 
+
+/* Phone-only lobby/menu refinements. Desktop rules remain unchanged. */
+@media (max-width:799px){
+  #logo .l1{text-shadow:0 0 26px color-mix(in srgb,var(--amber) 4%,transparent)}
+  #logo .l2{text-shadow:0 0 18px color-mix(in srgb,var(--amber) 10%,transparent),0 3px 0 color-mix(in srgb,var(--amber) 35%,#000)}
+  #lhead{padding:9px 10px;gap:4px}
+  #lhead>.lt,#lhead>#rcode,#lhead>#chint,#lhead>.lrow{display:none!important}
+  #mroom{display:block!important;width:100%}
+  .room-code-row{display:flex;align-items:center;justify-content:center;gap:8px}
+  #rcodeM{display:flex;gap:4px;min-width:0;cursor:pointer}
+  #rcodeM i{font-style:normal;display:grid;place-items:center;width:27px;height:34px;background:#0006;border:1px solid #444;border-radius:7px;font-size:20px;font-weight:800}
+  #invite{flex:none;padding:8px 10px;font-size:12px;border-radius:9px}
+  .room-meta{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:7px;font-size:11px}
+  .room-meta .bdg{padding:4px 7px;font-size:10px}
+  #chintM{font-size:10px;color:#999;text-align:right;flex:1}
+  #plist{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:8px}
+  #plist .pl{position:relative;min-width:0;min-height:91px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;padding:4px 2px;border-radius:10px;text-align:center}
+  #plist .pl .pav{display:none}
+  #plist .pl .crown{height:15px;line-height:15px;font-size:14px}
+  #plist .pl .avatar{font-size:25px;line-height:29px}
+  #plist .pl .status{position:absolute;right:5px;top:5px;width:7px;height:7px;border-radius:50%;background:#4caf50}
+  #plist .pl .status.off{background:#777}
+  #plist .pl .plname{max-width:100%;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #plist .pl .wins{font-size:10px;color:#888}
+  #plist .pl .wins.has{color:var(--amber)}
+  #plist .pl .hostlabel{display:none!important}
+  #mbox .player-profile{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0 12px}
+  #mbox .player-profile .bigav{font-size:48px}
+  #mbox .player-profile .playername{font-size:20px;font-weight:800}
+  #mbox .player-profile .playerstats{font-size:12px;color:#aaa}
+  #mbox .player-actions{display:flex;gap:8px}
+  #mbox .player-actions button{flex:1;padding:10px 6px}
+}
+.m-only{display:none}
+
 /* ---- settings / modal / themes ---- */
 /* ---- main menu ---- */
 #menu{position:relative;justify-content:center;gap:0;
@@ -337,6 +372,69 @@ body{overflow:hidden}
 .fly{position:absolute;left:0;top:0;font-size:40px;line-height:1;pointer-events:none;will-change:transform}
 #tcap{position:absolute;left:6px;right:6px;bottom:34px;text-align:center;font-weight:700;font-size:13px;pointer-events:none}
 #tcap span{display:inline-block;background:#000c;color:#4caf50;border-radius:8px;padding:4px 10px}
+
+/* Native Android app parity: phone/tablet portrait only. Desktop stays untouched. */
+.desktop-name-input{display:block}
+#joinNameSection{display:none}
+@media(max-width:799px){.desktop-name-input{display:none!important}#joinNameSection{display:block}}
+.center-screen{justify-content:center!important;gap:14px!important;padding:24px!important}
+.screen-label{display:block;width:100%;color:#bbb;font-size:15px;margin-top:4px}
+.name-section{width:100%;min-height:44px}
+.name-section .playing-row{display:flex;align-items:center;gap:8px;width:100%;min-height:44px}
+.name-section .playing-label{font-size:15px;color:#bbb;white-space:nowrap}
+.name-section .playing-name{font-size:18px;color:var(--amber);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.name-section .change-name{padding:7px 8px;background:transparent;color:var(--amber);font-size:12px;letter-spacing:.5px}
+.name-section input{width:100%;margin-top:5px}
+.backbtn{background:transparent!important;border:0!important;color:#bbb!important;padding:10px!important}
+@media(max-width:799px){
+  .s{width:100%;max-width:520px;padding:calc(10px + env(safe-area-inset-top)) 24px calc(10px + env(safe-area-inset-bottom));gap:10px}
+  /* Android MainMenu: centered logo, PLAY, two equal action cards, achievements and tip. */
+  #menu{justify-content:center;gap:0;padding:24px!important}
+  #mhero{margin:0 0 42px;gap:0}
+  #logo .l1{font-size:18px;letter-spacing:7px}
+  #logo .l2{font-size:54px}
+  #logo svg{width:210px}
+  #mhero .tag{font-size:14px;letter-spacing:2px;margin-top:0}
+  #mctl{gap:14px}
+  #pcard{display:none!important}
+  #menu #play{height:64px;padding:16px;border-radius:18px;font-size:20px}
+  #menu .two button{height:80px;justify-content:center}
+  #mfoot{margin-top:16px;gap:10px}
+  #machv{padding:8px 14px}
+  #gear{top:calc(14px + env(safe-area-inset-top));right:14px}
+  #menu #merr{min-height:0}
+  /* App Create/Join screens use a centered column and the shared 56px primary button. */
+  #createscr,#joinscr{gap:14px!important}
+  #createscr h1,#joinscr h1{margin-bottom:18px}
+  #createscr button:not(.backbtn),#joinscr button:not(.backbtn){height:56px;border-radius:14px;font-size:17px}
+  #code{letter-spacing:2px;text-transform:uppercase}
+  /* Android settings uses generous, full-width rows with a 24dp side margin. */
+  #settings{padding:24px!important;gap:10px}
+  #settings h1{margin-top:4px;margin-bottom:10px}
+  #srows{gap:10px!important}
+  .sr{min-height:54px;padding:14px 16px;border-radius:14px}
+  .sr .si{width:32px}
+  .sr .st{font-size:17px}
+  #sback{flex:none;min-height:42px}
+  /* Lobby compactness and game controls follow the Android vertical layout. */
+  #lobby{gap:8px;padding-left:12px;padding-right:12px}
+  #lhead{border-radius:14px}
+  #plist{border-radius:14px}
+  #chat{min-height:60px}
+  #msg{flex:none}
+  #game{gap:8px}
+  #top{flex:none}
+  #time{width:52px;height:52px}
+  #cwrap{min-height:150px}
+  #tools{gap:8px}
+  .pal{gap:6px}
+  .dot{width:30px;height:30px}
+  #guess{flex:none}
+  #log{flex:none;height:104px}
+  #scores{flex:none;max-height:60px}
+  #final{padding:20px 24px!important}
+}
+/* The name section appears like the Android app's "Playing as / CHANGE" row. */
 </style></head><body>
 <div id="ban">Connecting to server…</div>
 
@@ -358,20 +456,35 @@ body{overflow:hidden}
  </div>
 </div>
 
-<div id="joinscr" class="s" style="justify-content:center">
+<div id="createscr" class="s" style="justify-content:center">
+ <h1 style="font-size:30px">CREATE ROOM</h1>
+ <div class="name-section" id="createNameSection"></div>
+ <button id="createConfirm">CREATE</button>
+ <div class="err" id="cerr"></div>
+ <button id="cback" class="o backbtn">← Back</button>
+</div>
+
+<div id="joinscr" class="s center-screen">
  <h1 style="font-size:30px">JOIN ROOM</h1>
- <input id="name2" maxlength="20" placeholder="Your name" autocomplete="off">
- <input id="code" maxlength="6" placeholder="Room code" autocapitalize="characters" autocomplete="off">
+ <div class="name-section" id="joinNameSection"></div>
+ <input id="name2" class="desktop-name-input" maxlength="20" placeholder="Your name" autocomplete="off">
+ <label class="screen-label" for="code">Room Code</label>
+ <input id="code" maxlength="6" placeholder="Enter room code" autocapitalize="characters" autocomplete="off">
  <button id="join">JOIN</button>
  <div class="err" id="jerr"></div>
- <button id="jback" class="o" style="background:none;border:0;color:#999">← Back</button>
+ <button id="jback" class="o backbtn">← Back</button>
 </div>
 
 <div id="lobby" class="s">
  <div id="lhead"><span class="lt">ROOM CODE</span>
   <b id="rcode" class="am" title="Tap to copy"></b>
   <span id="chint" class="gr" style="font-size:11px">Tap code to copy</span>
-  <div class="lrow"><span class="bdg" id="lpub"></span><span class="bdg" id="lcnt"></span><button id="lshare" class="o">🔗 Share invite</button></div></div>
+  <div class="lrow"><span class="bdg" id="lpub"></span><span class="bdg" id="lcnt"></span><button id="lshare" class="o">🔗 Share invite</button></div>
+  <div id="mroom" class="m-only">
+   <div class="room-code-row"><b id="rcodeM" class="am" title="Tap to copy"></b><button id="invite" class="o">🔗 Invite</button></div>
+   <div class="room-meta"><span class="bdg" id="roomvisibility"></span><span class="bdg" id="roomcount"></span><span id="chintM">Tap code to copy</span></div>
+  </div>
+ </div>
  <div class="card" id="plist"></div>
  <div class="card grow" id="chat"></div>
  <div id="rbar" class="card" style="display:none;align-items:center;gap:8px"><div style="flex:1;min-width:0"><b class="am" id="rn" style="font-size:12px"></b><div id="rq2" class="gr" style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div></div><button id="rx" class="o" style="padding:6px 12px">✕</button></div>
@@ -486,7 +599,7 @@ function blobSplat(k){ const L=[[-.22,-.12],[.24,-.16],[-.18,.22],[.22,.2]];
 const splat=id=>{ const k=skinOf(id); return k.id==='egg'?friedEgg():blobSplat(k); };
 
 const AVATARS=['🙂','😎','🤠','🥳','🤓','😺','🐶','🐼','🦊','🐸','🐵','🦁','🐯','🐧','🦄','🐙','🦖','🤖','👻','👽','🎨','🚀','⚽','🍕'];
-S.avatar = AVATARS.includes(localStorage.avatar) ? localStorage.avatar : '🙂';
+S.avatar = localStorage.avatar || '🙂';
 const avOf=id=>(S.players.find(p=>p.id===id)||{}).avatar||'🙂';
 
 // ---------- throw animation ----------
@@ -536,15 +649,43 @@ function checkAch(){ let seen=[]; try{ seen=JSON.parse(localStorage.ach_seen||'[
     fresh.map(a=>`<div class="opt" style="cursor:default"><span style="font-size:30px">${a.ic}</span><div><b>${a.name}</b><div class="gr" style="font-size:12px">${a.desc}</div></div></div>`).join(''), null, 'NICE!'); }
 
 // ---- modal + settings screen ----
-function modal(t,h,fn,btn){ $('mt').textContent=t; $('mb').innerHTML=h; $('mb').onclick=fn||null; $('mx').textContent=btn||'CLOSE'; $('modal').classList.add('on'); }
+function modal(t,h,fn,btn){ $('mt').textContent=t; $('mb').innerHTML=h; $('mb').onclick=fn||null; $('mx').textContent=btn||'CLOSE'; $('mx').onclick=closeModal; $('modal').classList.add('on'); }
 function closeModal(){ $('modal').classList.remove('on'); }
 $('mx').onclick=closeModal; $('modal').onclick=e=>{ if(e.target.id==='modal') closeModal(); };
 
-function openAvatar(){ modal('Choose your avatar','<div class="av">'+AVATARS.map(a=>`<span data-a="${a}" class="${a===S.avatar?'sel':''}">${a}</span>`).join('')+'</div>',
-  e=>{ const a=e.target.dataset.a; if(!a)return; S.avatar=localStorage.avatar=a; closeModal(); renderSettings(); renderMenu(); }); }
-function openName(){ modal('Change name','<input id="nn" maxlength="20" placeholder="Your name" autocomplete="off" value="'+esc(localStorage.name||'')+'"><div class="gr" style="font-size:12px">Used the next time you join a room.</div><button id="nsave">SAVE</button>',
-  e=>{ if(e.target.id!=='nsave')return; const v=$('nn').value.trim(); if(!v)return; localStorage.name=v; $('name').value=$('name2').value=v; closeModal(); renderSettings(); });
-  setTimeout(()=>{ const i=$('nn'); if(i){ i.focus(); i.select(); } },50); }
+function openAvatar(){
+  modal('Choose your avatar',
+    '<label for="avatarInput" class="gr" style="font-size:13px">Use your phone keyboard’s emoji panel.</label><input id="avatarInput" maxlength="16" value="'+esc(S.avatar)+'" placeholder="Choose an emoji" style="font-size:28px;text-align:center"><div id="avatarPreview" style="font-size:42px;text-align:center">'+esc(S.avatar)+'</div><div class="gr" style="font-size:12px">Examples: 😀 🦄 💀 🏏 🇵🇰</div>',
+    null, 'SAVE');
+  const inp=$('avatarInput');
+  inp.focus();
+  inp.oninput=()=>{ $('avatarPreview').textContent=inp.value||'🙂'; };
+  $('mx').onclick=()=>{
+    const a=inp.value.trim();
+    if(a && a.length<=16){
+      S.avatar=localStorage.avatar=a;
+      closeModal(); renderSettings(); renderMenu();
+    } else { inp.focus(); }
+  };
+}
+function openName(){
+  modal('Change name',
+    '<label for="newName" class="gr" style="font-size:13px">Your name (1–20 characters)</label><input id="newName" maxlength="20" value="'+esc(localStorage.name||'')+'" placeholder="Your name" autocomplete="off">',
+    null, 'SAVE');
+  const inp=$('newName');
+  inp.focus();
+  $('mx').onclick=()=>{
+    const n=inp.value.trim();
+    inp.setCustomValidity('');
+    if(!n||n.length>20){
+      inp.setCustomValidity('Enter a name between 1 and 20 characters.');
+      inp.reportValidity(); inp.focus(); return;
+    }
+    localStorage.name=n;
+    $('name').value=n; if($('name2'))$('name2').value=n; const ni=$('joinNameInput'); if(ni)ni.value=n; const ci=$('createNameInput'); if(ci)ci.value=n; renderScreenName('joinNameSection'); renderScreenName('createNameSection');
+    closeModal(); renderSettings(); renderMenu();
+  };
+}
 function openTheme(){ modal('Themes', THEMES.map(t=>{ const ok=true, sel=theme().id===t.id;
   return `<div class="opt${sel?' sel':''}${ok?'':' lock'}" data-t="${ok?t.id:''}" style="background:${t.panel};border-color:${sel?t.accent:'#888'}"><i class="sw" style="background:${t.accent}"></i><div style="flex:1"><b style="color:${ok?'#fff':'#888'}">${t.name}</b>${ok?'':`<div class="gr" style="font-size:12px">🔒 ${t.txt}</div>`}</div>${sel?`<b style="color:${t.accent};font-size:20px">✓</b>`:''}</div>`; }).join(''),
   e=>{ const el=e.target.closest('[data-t]'); if(!el||!el.dataset.t)return; localStorage.theme=el.dataset.t; applyTheme(); renderSettings(); openTheme(); }); }
@@ -559,7 +700,7 @@ function openAch(){ modal(`Achievements ${achDone()}/${ACH.length}`, ACH.map(a=>
 
 const srow=(ic,t,v,id)=>`<div class="sr" data-r="${id}"><span class="si">${ic}</span><b class="st">${t}</b><span class="gr">${v}</span><span class="gr">›</span></div>`;
 function renderSettings(){ $('srows').innerHTML =
-  srow(S.avatar,'Avatar','','avatar') + srow('✏️','Change name',esc(localStorage.name||'—'),'name') + srow(sound?'🔊':'🔇','Sound',sound?'ON':'OFF','sound') + srow('💬','Taunts',tauntsOn()?'ON':'OFF','taunts') +
+  srow('✏️','Name',esc(localStorage.name||'Not set'),'name') + srow(S.avatar,'Avatar','','avatar') + srow(sound?'🔊':'🔇','Sound',sound?'ON':'OFF','sound') + srow('💬','Taunts',tauntsOn()?'ON':'OFF','taunts') +
   srow('🎨','Theme',theme().name,'theme') + srow(skin().emoji,'Egg skin',skin().name,'skin') +
   srow('📊','My stats','','stats') + srow('🏆','Achievements',`${achDone()}/${ACH.length}`,'ach'); }
 $('srows').onclick = e => { const el=e.target.closest('[data-r]'); if(!el)return; const r=el.dataset.r;
@@ -682,34 +823,130 @@ $('pav').onclick = () => openAvatar();
 $('machv').onclick = () => openAch();
 $('menu').addEventListener('click', e => { if(e.target.closest('button') && navigator.vibrate) navigator.vibrate(12); });
 renderMenu();
-$('name').value = $('name2').value = localStorage.name || '';
-const q = new URLSearchParams(location.search).get('room'); if(q){ $('code').value=q.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6); show('joinscr'); }
+$('name').value = localStorage.name || ''; $('name2').value = localStorage.name || '';
+function renderScreenName(sectionId){
+  const section=$(sectionId); if(!section)return;
+  const inputId=sectionId==='joinNameSection'?'joinNameInput':'createNameInput';
+  const saved=(localStorage.name||'').trim();
+  const editing=section.dataset.editing==='true'||!saved;
+  section.innerHTML = (saved&&!editing ? `<div class="playing-row"><span class="playing-label">Playing as </span><b class="playing-name">${esc(saved)}</b><button type="button" class="change-name" data-change-name="1">CHANGE</button></div>` : '') +
+    `<input id="${inputId}" maxlength="20" placeholder="Enter your name" autocomplete="off" value="${esc(editing?'':saved)}" ${editing?'':'style="display:none"'}>`;
+  section.dataset.editing=editing?'true':'false';
+  const input=$(inputId);
+  if(input) input.oninput=()=>{ if(input.value.length>20)input.value=input.value.slice(0,20); };
+}
+function screenName(sectionId){
+  const section=$(sectionId), input=section?.querySelector('input');
+  return (section?.dataset.editing==='true' ? (input?.value||'').trim() : (localStorage.name||'').trim());
+}
+document.querySelectorAll('.name-section').forEach(s=>renderScreenName(s.id));
+document.querySelectorAll('.name-section').forEach(section=>section.addEventListener('click',e=>{
+  if(e.target.closest('[data-change-name]')){ section.dataset.editing='true'; renderScreenName(section.id); const input=section.querySelector('input'); if(input){input.style.display='block';input.value=localStorage.name||'';input.focus();} }
+}));
+const q = new URLSearchParams(location.search).get('room'); if(q){ $('code').value=q.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6); renderScreenName('joinNameSection'); show('joinscr'); }
 $('code').oninput = e => e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
-function enter(ev, extra, nameEl, errEl){ const name=nameEl.value.trim(); if(!name){ errEl.textContent='Enter your name.'; return; }
-  localStorage.name=name; errEl.textContent='';
-  socket.emit(ev, {playerName:name, avatar:S.avatar, ...extra}, r => { if(r&&r.success){ S.room=r.roomCode; S.pub=!!r.isPublic; S.players=r.players; S.chat=[]; S.pickKey=''; drawChat(); drawLobby(); show('lobby'); } else errEl.textContent=(r&&r.message)||'Could not connect.'; }); }
-$('create').onclick = () => enter('create_room', {}, $('name'), $('merr'));
-$('play').onclick = () => enter('play_public', {}, $('name'), $('merr'));
-$('jopen').onclick = () => { $('name2').value=$('name').value; $('jerr').textContent=''; show('joinscr'); };
-$('jback').onclick = () => { $('name').value=$('name2').value; show('menu'); };
-$('join').onclick = () => { const c=$('code').value.trim(); if(c.length!==6){ $('jerr').textContent='Enter the 6-character room code.'; return; } enter('join_room', {roomCode:c}, $('name2'), $('jerr')); };
+function enter(ev, extra, nameSource, errEl){
+  const name=(typeof nameSource==='string'?nameSource:nameSource?.value||'').trim();
+  if(!name){ errEl.textContent='Enter your name.'; return; }
+  localStorage.name=name; $('name').value=name; errEl.textContent='';
+  socket.emit(ev, {playerName:name, avatar:S.avatar, ...extra}, r => { if(r&&r.success){ S.room=r.roomCode; S.pub=!!r.isPublic; S.players=r.players; S.chat=[]; S.pickKey=''; drawChat(); drawLobby(); show('lobby'); } else errEl.textContent=(r&&r.message)||'Could not connect.'; });
+}
+$('create').onclick = () => {
+  if(!matchMedia('(max-width:799px)').matches){ enter('create_room', {}, $('name'), $('merr')); return; }
+  $('cerr').textContent=''; renderScreenName('createNameSection'); show('createscr');
+};
+$('createConfirm').onclick = () => enter('create_room', {}, screenName('createNameSection'), $('cerr'));
+$('cback').onclick = () => show('menu');
+$('play').onclick = () => {
+  if(matchMedia('(max-width:799px)').matches && !(localStorage.name||'').trim()){
+    modal('Your name','<input id="firstName" maxlength="20" placeholder="Enter your name" autocomplete="off">',null,'PLAY');
+    const inp=$('firstName'); inp.focus();
+    $('mx').onclick=()=>{const n=inp.value.trim();if(!n){inp.reportValidity?.();inp.focus();return;}localStorage.name=n;$('name').value=n;closeModal();enter('play_public',{},n,$('merr'));};
+    return;
+  }
+  enter('play_public', {}, $('name'), $('merr'));
+};
+$('jopen').onclick = () => {
+  $('jerr').textContent='';
+  if(matchMedia('(max-width:799px)').matches){ renderScreenName('joinNameSection'); show('joinscr'); }
+  else { $('name2').value=$('name').value; show('joinscr'); }
+};
+$('jback').onclick = () => show('menu');
+$('join').onclick = () => {
+  const c=$('code').value.trim();
+  if(c.length!==6){ $('jerr').textContent='Enter the 6-character room code.'; return; }
+  const name=matchMedia('(max-width:799px)').matches ? screenName('joinNameSection') : $('name2').value;
+  enter('join_room', {roomCode:c}, name, $('jerr'));
+};
 
 // ---------- lobby ----------
 function drawLobby(){
-  $('rcode').innerHTML=[...S.room].map(c=>`<i>${esc(c)}</i>`).join(''); const m=me(), host=!!(m&&m.isHost);
+  const m=me(), host=!!(m&&m.isHost), phone=matchMedia('(max-width:799px)').matches;
+  $('rcode').innerHTML=[...S.room].map(c=>`<i>${esc(c)}</i>`).join('');
+  $('rcodeM').innerHTML=[...S.room].map(c=>`<i>${esc(c)}</i>`).join('');
   $('lpub').textContent = S.pub ? '🌐 Public room' : '🔒 Private room';
   $('lcnt').textContent = `👥 ${S.players.length}/8`;
-  const cards=S.players.slice().sort((a,b)=>(b.wins||0)-(a.wins||0)).map(p=>`<div class="pl${p.connected?'':' off'}" data-id="${p.id}"><span class="pav">${esc(p.avatar||'🙂')}</span><div class="pn"><div class="r1"><span class="nm">${esc(p.name)}</span><span class="wn" style="color:${p.wins>0?'var(--amber)':'#777'}">🏆 ${p.wins||0}</span></div><div class="sub">${p.isHost?'<span class="am">👑 HOST</span>':''}${p.connected?'':(p.isHost?' · ':'')+'reconnecting…'}</div></div></div>`).join('');
-  $('plist').dataset.n = `${S.players.length}/8`;
-  $('plist').innerHTML = cards + (S.players.length<8 ? '<div class="pl empty">➕ Invite a friend</div>' : '');
+  $('roomvisibility').textContent = S.pub ? '🌐 Public' : '🔒 Private';
+  $('roomcount').textContent = `👥 ${S.players.length}/8`;
+  const sorted=S.players.slice().sort((a,b)=>phone ? ((b.wins??b.gamesWon??0)-(a.wins??a.gamesWon??0)) : ((b.wins||0)-(a.wins||0)));
+  if(phone){
+    const cards=sorted.map(p=>{
+      const wins=Number(p.wins??p.gamesWon??p.stats?.won??0);
+      const connected=p.connected!==false;
+      return `<div class="pl${connected?'':' off'}" data-id="${esc(p.id)}">
+        <span class="crown">${p.isHost?'👑':''}</span>
+        <span class="status ${connected?'on':'off'}"></span>
+        <span class="avatar">${esc(p.avatar||'🙂')}</span>
+        <span class="plname">${esc(p.name||'Player')}</span>
+        <span class="wins ${wins>0?'has':''}">🏆 ${wins}</span>
+      </div>`;
+    }).join('');
+    $('plist').dataset.n=`${S.players.length}/8`;
+    $('plist').innerHTML=cards+(S.players.length<8?'<div class="pl empty">＋ Invite</div>':'');
+  } else {
+    const cards=sorted.map(p=>`<div class="pl${p.connected?'':' off'}" data-id="${esc(p.id)}"><span class="pav">${esc(p.avatar||'🙂')}</span><div class="pn"><div class="r1"><span class="nm">${esc(p.name)}</span><span class="wn" style="color:${p.wins>0?'var(--amber)':'#777'}">🏆 ${p.wins||0}</span></div><div class="sub">${p.isHost?'<span class="am">👑 HOST</span>':''}${p.connected?'':(p.isHost?' · ':'')+'reconnecting…'}</div></div></div>`).join('');
+    $('plist').dataset.n=`${S.players.length}/8`;
+    $('plist').innerHTML=cards+(S.players.length<8?'<div class="pl empty">➕ Invite a friend</div>':'');
+  }
   $('host').style.display=host?'flex':'none'; $('wait').style.display=host?'none':'block';
   const on=S.players.filter(p=>p.connected).length;
-  $('start').disabled = on<2; $('start').textContent = on<2 ? 'Need 1 more player to start' : 'START GAME'; }
-$('plist').onclick = e => { const el=e.target.closest('.pl'); if(el&&el.classList.contains('empty')){ $('lshare').click(); return; }
-  const m=me(); if(!el||!m||!m.isHost||!el.dataset.id||el.dataset.id===pid)return;
-  const id=el.dataset.id, n=nameOf(id);
+  $('start').disabled=on<2; $('start').textContent=on<2?'Need 1 more player to start':'START GAME';
+}
+$('plist').onclick = e => {
+  const el=e.target.closest('.pl');
+  if(!el)return;
+  if(el.classList.contains('empty')){ $('invite').click(); return; }
+  const id=el.dataset.id, p=S.players.find(x=>String(x.id)===String(id)), m=me();
+  if(!p||!m)return;
+  const phone=matchMedia('(max-width:799px)').matches;
+  if(phone){
+    const wins=Number(p.wins??p.gamesWon??p.stats?.won??0);
+    const points=Number(S.scores[p.id]||0);
+    const self=String(p.id)===String(pid);
+    const host=!!m.isHost;
+    const actions=(!self&&host)
+      ? `<div class="player-actions">${(!S.pub?'<button class="o" data-player-action="host">👑 MAKE HOST</button>':'')}<button data-player-action="kick" class="o">✕ KICK</button></div>`
+      : '';
+    modal('Player details',
+      `<div class="player-profile"><div class="bigav">${esc(p.avatar||'🙂')}</div><div class="playername">${esc(p.name||'Player')}</div><div class="playerstats">${p.isHost?'👑 Host · ':''}${p.connected===false?'⚪ Offline':'🟢 Online'}</div></div>
+       <div class="row"><span class="gr">🏆 Wins</span><b class="am" style="text-align:right">${wins}</b></div>
+       <div class="row"><span class="gr">⭐ Session points</span><b class="am" style="text-align:right">${points}</b></div>${self?'<div class="gr" style="font-size:12px;text-align:center">This is you.</div>':''}${actions}`,
+      ev=>{
+        const b=ev.target.closest('[data-player-action]');
+        if(!b)return;
+        const action=b.dataset.playerAction;
+        closeModal();
+        if(action==='host'&&!S.pub&&host&& !self) socket.emit('transfer_host',{playerId:p.id});
+        if(action==='kick'&&host&&!self&&confirm(`Kick ${p.name||'this player'}?`)) socket.emit('kick_player',{playerId:p.id});
+      }, 'CLOSE');
+    return;
+  }
+  // Desktop behavior intentionally remains the existing confirmation flow.
+  if(!m.isHost||!id||String(id)===String(pid))return;
+  const n=nameOf(id);
   if(S.pub){ if(confirm(`Kick ${n}?`)) socket.emit('kick_player',{playerId:id}); return; }
-  if(confirm(`Make ${n} the host?\n(Cancel for the kick option)`)) socket.emit('transfer_host',{playerId:id}); else if(confirm(`Kick ${n}?`)) socket.emit('kick_player',{playerId:id}); };
+  if(confirm(`Make ${n} the host?\n(Cancel for the kick option)`)) socket.emit('transfer_host',{playerId:id}); else if(confirm(`Kick ${n}?`)) socket.emit('kick_player',{playerId:id});
+};
 
 // ---- chat bubbles + reactions (same wire format as the Android app, so both see each other's) ----
 const REACT='⚑|', REPLY='↪|', EMOJIS=['👍','❤️','😂','😮','😢'];
@@ -758,6 +995,13 @@ $('lshare').onclick = async () => { const c=S.room; if(!c)return; const url=loca
   try{ if(navigator.share){ await navigator.share({title:'Guess The Drawing',text:'Join my Guess The Drawing room: '+c,url}); return; } }catch(e){ if(e&&e.name==='AbortError')return; }
   try{ await navigator.clipboard.writeText(url); }catch(e){ const t=document.createElement('textarea'); t.value=url; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); }catch(_){} t.remove(); }
   const h=$('chint'); h.textContent='Invite link copied ✓'; setTimeout(()=>{ h.textContent='Tap code to copy'; },1800); };
+$('rcodeM').onclick = async () => {
+  const c=S.room; if(!c)return;
+  try{ await navigator.clipboard.writeText(c); }
+  catch(e){ const t=document.createElement('textarea'); t.value=c; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); }catch(_){} t.remove(); }
+  const h=$('chintM'); h.textContent='Copied ✓'; setTimeout(()=>{ h.textContent='Tap code to copy'; },1500);
+};
+$('invite').onclick = () => $('lshare').click();
 $('start').onclick = () => { $('lerr').textContent='';
   socket.emit('start_game',{rounds:+$('rounds').value, roundTime:+$('rtime').value, choiceCount:+$('choices').value,
     customWords:$('custom').value.split(/[,\n]/).map(s=>s.trim()).filter(Boolean), customOnly:$('conly').checked}, r=>{ if(r&&!r.success) $('lerr').textContent=r.message; }); };
