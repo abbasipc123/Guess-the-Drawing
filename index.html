@@ -481,8 +481,8 @@ body{overflow:hidden}
   <span id="chint" class="gr" style="font-size:11px">Tap code to copy</span>
   <div class="lrow"><span class="bdg" id="lpub"></span><span class="bdg" id="lcnt"></span><button id="lshare" class="o">🔗 Share invite</button></div>
   <div id="mroom" class="m-only">
-   <div class="room-code-row"><b id="rcodeM" class="am" title="Tap to copy"></b><button id="invite" class="o">🔗 Invite</button></div>
-   <div class="room-meta"><span class="bdg" id="roomvisibility"></span><span class="bdg" id="roomcount"></span><span id="chintM">Tap code to copy</span></div>
+   <div class="room-code-row"><b id="rcodeM" class="am" title="Tap to copy"></b></div>
+   <div class="room-meta"><span class="bdg" id="roomvisibility"></span><span id="chintM">Tap code to copy</span><button id="invite" class="o">🔗 Invite</button></div>
   </div>
  </div>
  <div class="card" id="plist"></div>
@@ -887,7 +887,6 @@ function drawLobby(){
   $('lpub').textContent = S.pub ? '🌐 Public room' : '🔒 Private room';
   $('lcnt').textContent = `👥 ${S.players.length}/8`;
   $('roomvisibility').textContent = S.pub ? '🌐 Public' : '🔒 Private';
-  $('roomcount').textContent = `👥 ${S.players.length}/8`;
   const sorted=S.players.slice().sort((a,b)=>phone ? ((b.wins??b.gamesWon??0)-(a.wins??a.gamesWon??0)) : ((b.wins||0)-(a.wins||0)));
   if(phone){
     const cards=sorted.map(p=>{
@@ -902,11 +901,11 @@ function drawLobby(){
       </div>`;
     }).join('');
     $('plist').dataset.n=`${S.players.length}/8`;
-    $('plist').innerHTML=cards+(S.players.length<8?'<div class="pl empty">＋ Invite</div>':'');
+    $('plist').innerHTML=cards;
   } else {
     const cards=sorted.map(p=>`<div class="pl${p.connected?'':' off'}" data-id="${esc(p.id)}"><span class="pav">${esc(p.avatar||'🙂')}</span><div class="pn"><div class="r1"><span class="nm">${esc(p.name)}</span><span class="wn" style="color:${p.wins>0?'var(--amber)':'#777'}">🏆 ${p.wins||0}</span></div><div class="sub">${p.isHost?'<span class="am">👑 HOST</span>':''}${p.connected?'':(p.isHost?' · ':'')+'reconnecting…'}</div></div></div>`).join('');
     $('plist').dataset.n=`${S.players.length}/8`;
-    $('plist').innerHTML=cards+(S.players.length<8?'<div class="pl empty">➕ Invite a friend</div>':'');
+    $('plist').innerHTML=cards;
   }
   $('host').style.display=host?'flex':'none'; $('wait').style.display=host?'none':'block';
   const on=S.players.filter(p=>p.connected).length;
@@ -915,7 +914,6 @@ function drawLobby(){
 $('plist').onclick = e => {
   const el=e.target.closest('.pl');
   if(!el)return;
-  if(el.classList.contains('empty')){ $('invite').click(); return; }
   const id=el.dataset.id, p=S.players.find(x=>String(x.id)===String(id)), m=me();
   if(!p||!m)return;
   const phone=matchMedia('(max-width:799px)').matches;
