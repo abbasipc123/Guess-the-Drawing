@@ -435,6 +435,84 @@ body{overflow:hidden}
   #final{padding:20px 24px!important}
 }
 /* The name section appears like the Android app's "Playing as / CHANGE" row. */
+
+/* ===== Professional settings screen: consistent with the main menu ===== */
+#settings{
+  position:relative;
+  background:radial-gradient(75% 30% at 50% 0%,color-mix(in srgb,var(--amber) 13%,transparent),transparent 75%);
+  gap:14px;
+}
+#settings .settings-head{
+  display:flex;align-items:center;gap:12px;text-align:left;
+  padding:8px 2px 12px;border-bottom:1px solid #333;flex:none;
+}
+#settings .settings-head .settings-mark{
+  width:48px;height:48px;flex:none;display:grid;place-items:center;
+  border-radius:15px;background:color-mix(in srgb,var(--amber) 13%,var(--panel));
+  border:1px solid color-mix(in srgb,var(--amber) 35%,#333);font-size:25px;
+}
+#settings .settings-heading{min-width:0;flex:1}
+#settings .settings-heading h1{font-size:25px;line-height:1.1;text-align:left;margin:0}
+#settings .settings-heading p{font-size:12px;color:#999;margin:5px 0 0}
+#settings .settings-heading h1 b{display:inline;font-size:25px}
+#srows{display:flex;flex-direction:column;gap:16px;overflow-y:auto;min-height:0;padding:2px 1px 8px}
+.settings-profile{
+ display:flex;align-items:center;gap:12px;padding:14px;
+ background:linear-gradient(115deg,color-mix(in srgb,var(--amber) 9%,var(--panel)),var(--panel) 68%);
+ border:1px solid #383838;border-radius:17px;
+}
+.settings-profile .profile-avatar{
+ width:52px;height:52px;flex:none;display:grid;place-items:center;border-radius:16px;
+ background:#292929;border:1px solid color-mix(in srgb,var(--amber) 45%,#444);font-size:29px;
+}
+.settings-profile .profile-copy{min-width:0;flex:1}
+.settings-profile .profile-eyebrow{font-size:10px;letter-spacing:1.8px;color:#999;font-weight:800}
+.settings-profile .profile-name{font-size:17px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px}
+.settings-profile .profile-meta{font-size:12px;color:#999;margin-top:3px}
+.settings-profile .profile-edit{flex:none;padding:9px 11px;font-size:11px;letter-spacing:.6px;border-radius:10px}
+.settings-group{display:flex;flex-direction:column;gap:7px}
+.settings-group-title{font-size:10px;letter-spacing:2px;color:var(--amber);font-weight:800;padding:0 4px 2px}
+.settings-group-note{font-size:12px;color:#888;padding:0 4px 2px}
+.settings-group .sr{
+ min-height:58px;padding:11px 13px;gap:11px;border:1px solid #333;
+ background:color-mix(in srgb,var(--panel) 94%,#fff 6%);border-radius:13px;
+ transition:border-color .15s,background .15s;
+}
+.settings-group .sr:active{border-color:var(--amber);background:color-mix(in srgb,var(--amber) 8%,var(--panel))}
+.settings-group .sr .si{
+ width:38px;height:38px;display:grid;place-items:center;flex:none;
+ border-radius:11px;background:#292929;font-size:20px;
+}
+.settings-group .sr .st{font-size:14px;font-weight:700;min-width:0}
+.settings-group .sr .sv{font-size:12px;color:#aaa;max-width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
+.settings-group .sr .chev{font-size:20px;color:#777;margin-left:1px}
+#sback{
+ flex:none;min-height:48px;border:1px solid #383838!important;border-radius:14px!important;
+ background:#222!important;color:#ddd!important;font-size:14px;
+}
+@media(min-width:800px){
+ #settings{width:100%;max-width:760px;align-self:center;padding:22px 28px}
+ #settings .settings-head{padding:8px 2px 16px}
+ #settings .settings-heading h1,#settings .settings-heading h1 b{font-size:29px}
+ #srows{width:100%;gap:18px}
+ .settings-group .sr:hover{border-color:#555;background:#292929}
+}
+@media(max-width:799px){
+ #settings{padding:calc(16px + env(safe-area-inset-top)) 24px calc(12px + env(safe-area-inset-bottom))!important;gap:12px}
+ #settings .settings-head{padding:5px 0 12px}
+ #settings .settings-mark{width:44px;height:44px;border-radius:14px}
+ #settings .settings-heading h1,#settings .settings-heading h1 b{font-size:24px}
+ #settings .settings-heading p{font-size:11px}
+ .settings-profile{padding:12px;border-radius:15px}
+ .settings-profile .profile-avatar{width:46px;height:46px;font-size:26px}
+ .settings-profile .profile-name{font-size:16px}
+ .settings-group .sr{min-height:56px;padding:9px 10px;gap:9px}
+ .settings-group .sr .si{width:35px;height:35px;font-size:19px}
+ .settings-group .sr .st{font-size:13px}
+ .settings-group .sr .sv{font-size:11px;max-width:38%}
+ #sback{min-height:46px}
+}
+
 </style></head><body>
 <div id="ban">Connecting to server…</div>
 
@@ -536,9 +614,15 @@ body{overflow:hidden}
 </div>
 
 <div id="settings" class="s">
- <h1 style="font-size:28px"><b class="am" style="font-size:28px">SETTINGS</b></h1>
- <div class="grow" id="srows" style="display:flex;flex-direction:column;gap:10px"></div>
- <button id="sback" class="o" style="background:none;border:0;color:#bbb">← Back</button>
+ <div class="settings-head">
+  <div class="settings-mark">⚙️</div>
+  <div class="settings-heading">
+   <h1><b class="am">SETTINGS</b></h1>
+   <p>Personalize your game experience</p>
+  </div>
+ </div>
+ <div class="grow" id="srows"></div>
+ <button id="sback" class="o">← Back to menu</button>
 </div>
 <div id="modal"><div id="mbox"><h2 id="mt" style="margin:0;font-size:20px"></h2><div id="mb" style="display:flex;flex-direction:column;gap:8px"></div><button id="mx" class="o">CLOSE</button></div></div>
 <canvas id="fw"></canvas>
@@ -698,16 +782,46 @@ function openStats(){ const r=(l,k)=>`<div class="row" style="padding:8px 0"><sp
 function openAch(){ modal(`Achievements ${achDone()}/${ACH.length}`, ACH.map(a=>{ const p=Math.min(ST.get(a.stat),a.goal), d=p>=a.goal;
   return `<div class="opt" style="cursor:default;${d?'border:2px solid var(--amber)':''}"><span style="font-size:28px;width:40px">${d?a.ic:'🔒'}</span><div style="flex:1"><b style="color:${d?'#fff':'#999'}">${a.name}</b><div class="gr" style="font-size:12px">${a.desc}</div><div class="pb"><i style="width:${p/a.goal*100}%"></i></div></div><b class="${d?'am':'gr'}" style="font-size:${d?20:12}px">${d?'✓':p+'/'+a.goal}</b></div>`; }).join('')); }
 
-const srow=(ic,t,v,id)=>`<div class="sr" data-r="${id}"><span class="si">${ic}</span><b class="st">${t}</b><span class="gr">${v}</span><span class="gr">›</span></div>`;
-function renderSettings(){ $('srows').innerHTML =
-  srow('✏️','Name',esc(localStorage.name||'Not set'),'name') + srow(S.avatar,'Avatar','','avatar') + srow(sound?'🔊':'🔇','Sound',sound?'ON':'OFF','sound') + srow('💬','Taunts',tauntsOn()?'ON':'OFF','taunts') +
-  srow('🎨','Theme',theme().name,'theme') + srow(skin().emoji,'Egg skin',skin().name,'skin') +
-  srow('📊','My stats','','stats') + srow('🏆','Achievements',`${achDone()}/${ACH.length}`,'ach'); }
+const srow=(ic,t,v,id,sub='')=>`<div class="sr" data-r="${id}" role="button" tabindex="0"><span class="si">${ic}</span><b class="st">${t}${sub?`<small style="display:block;font-size:11px;font-weight:400;color:#888;margin-top:3px">${sub}</small>`:''}</b><span class="sv">${v||''}</span><span class="chev">›</span></div>`;
+function renderSettings(){
+ const played=ST.get('played'), wins=ST.get('won'), correct=ST.get('correct');
+ $('srows').innerHTML =
+  `<div class="settings-profile">
+    <div class="profile-avatar">${esc(S.avatar)}</div>
+    <div class="profile-copy"><div class="profile-eyebrow">PLAYER PROFILE</div>
+      <div class="profile-name">${esc(localStorage.name||'Player')}</div>
+      <div class="profile-meta">${played} games played · ${wins} wins</div>
+    </div>
+   </div>
+   <section class="settings-group">
+    <div class="settings-group-title">PERSONALIZE</div>
+    ${srow('✏️','Display name',localStorage.name||'Set name','name','Change the name other players see')}
+    ${srow(S.avatar,'Avatar','Change','avatar','Choose an emoji for your player profile')}
+    ${srow(sound?'🔊':'🔇','Game sounds',sound?'On':'Off','sound','Round and guessing sound effects')}
+    ${srow('💬','Taunt sounds',tauntsOn()?'On':'Off','taunts','Play sound effects when taunts are sent')}
+   </section>
+   <section class="settings-group">
+    <div class="settings-group-title">APPEARANCE</div>
+    ${srow('🎨','Color theme',theme().name,'theme','Change the game accent and background')}
+    ${srow(skin().emoji,'Throwing item',skin().name,'skin','Choose your egg or unlocked item skin')}
+   </section>
+   <section class="settings-group">
+    <div class="settings-group-title">PROGRESS & ACHIEVEMENTS</div>
+    ${srow('📊','Game statistics',`${played} played`,'stats',`${wins} wins · ${ST.get('lost')} losses · ${correct} correct guesses`)}
+    ${srow('🏆','Achievements',`${achDone()}/${ACH.length}`,'ach','Track milestones and unlock rewards')}
+   </section>
+   <div style="text-align:center;color:#666;font-size:11px;padding:0 8px 4px">Your preferences are saved on this device.</div>`;
+}
 $('srows').onclick = e => { const el=e.target.closest('[data-r]'); if(!el)return; const r=el.dataset.r;
   if(r==='sound'){ sound=!sound; localStorage.snd=sound?'on':'off'; renderSettings(); }
   else if(r==='taunts'){ localStorage.taunts=tauntsOn()?'off':'on'; renderSettings(); }
   else if(r==='name') openName(); else if(r==='avatar') openAvatar(); else if(r==='theme') openTheme(); else if(r==='skin') openSkin();
   else if(r==='stats') openStats(); else if(r==='ach') openAch(); };
+$('srows').addEventListener('keydown', e => {
+  if((e.key==='Enter'||e.key===' ') && e.target.closest('[data-r]')){
+    e.preventDefault(); e.target.closest('[data-r]').click();
+  }
+});
 $('gear').onclick = () => { renderSettings(); show('settings'); };
 $('sback').onclick = () => show('menu');
 checkAch();
