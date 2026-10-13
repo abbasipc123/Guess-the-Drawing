@@ -99,6 +99,43 @@ body{overflow:hidden}
 .kb #info,.kb #tools,.kb #log,.kb #scores{display:none!important}
 .kb #time{width:40px;height:34px;font-size:18px}
 
+/* ---- lobby look ---- */
+#lobby{background:radial-gradient(70% 30% at 50% 8%,color-mix(in srgb,var(--amber) 14%,transparent),transparent 72%)}
+#lhead{background:var(--panel);border:1px solid #333;border-radius:18px;padding:12px 12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px}
+#lhead .lt{font-size:11px;letter-spacing:3px;color:#999;font-weight:700}
+#rcode{display:flex;gap:6px;cursor:pointer}
+#rcode i{font-style:normal;min-width:34px;padding:6px 0;text-align:center;font-size:24px;font-weight:800;background:#0006;border:1px solid #444;border-radius:10px}
+#lhead .lrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.bdg{background:#2a2a2a;border:1px solid #3a3a3a;border-radius:20px;padding:4px 10px;font-size:12px;color:#ccc}
+#lshare{padding:6px 14px;font-size:13px;border-radius:20px}
+#plist{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px}
+#plist::before{content:"PLAYERS · " attr(data-n);grid-column:1/-1;font-size:11px;letter-spacing:2px;font-weight:700;color:var(--amber)}
+#plist .pl{display:flex;align-items:center;gap:8px;background:#262626;border:1px solid #333;border-radius:14px;padding:8px 10px;min-width:0;cursor:pointer;animation:plin .3s ease-out}
+@keyframes plin{from{opacity:0;transform:translateY(6px)}}
+#plist .pl.off{opacity:.6}
+#plist .pl.empty{border-style:dashed;color:#888;justify-content:center;font-size:13px;min-height:54px}
+.pav{position:relative;flex:none;width:38px;height:38px;border-radius:50%;background:#333;display:grid;place-items:center;font-size:20px}
+.pav::after{content:"";position:absolute;right:-1px;bottom:-1px;width:10px;height:10px;border-radius:50%;background:#4caf50;border:2px solid #262626}
+.off .pav::after{background:#777}
+.pn{min-width:0;flex:1;display:flex;flex-direction:column}
+.pn .r1{display:flex;align-items:center;gap:6px;min-width:0}
+.pn .nm{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pn .wn{flex:none;font-size:12px;font-weight:700}
+.pn .sub{font-size:11px;color:#888;min-height:14px}
+#host{gap:10px!important}
+.flds{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fld{display:flex;flex-direction:column;gap:4px;font-size:10px;letter-spacing:1.5px;color:#999;font-weight:700}
+#cw{background:var(--panel);border:1px solid #333;border-radius:14px;padding:8px 12px}
+#cw summary{cursor:pointer;font-weight:700;color:#ccc}
+#cw textarea{margin:8px 0}
+#start{padding:16px;font-size:18px;letter-spacing:2px;border-radius:16px;background:linear-gradient(135deg,var(--amber),color-mix(in srgb,var(--amber) 60%,#ff5722));box-shadow:0 6px 20px color-mix(in srgb,var(--amber) 35%,transparent)}
+#start:disabled{box-shadow:none;background:#3a3a3a;color:#aaa;opacity:1;letter-spacing:0;font-size:15px}
+#start:active{transform:scale(.97)}
+#wait{background:var(--panel);border:1px dashed #444;border-radius:14px;padding:14px;animation:wpulse 2s ease-in-out infinite}
+@keyframes wpulse{50%{opacity:.55}}
+#leave{background:none;border:0;color:#aaa;font-size:14px;padding:8px}
+@media (prefers-reduced-motion:reduce){#plist .pl,#wait{animation:none}}
+
 /* ================= DESKTOP / WIDE SCREENS ONLY ================= */
 @media (min-width:900px) and (min-height:600px){
   button,.dot,#rcode,.pl,.bb{cursor:pointer}
@@ -210,9 +247,9 @@ body{overflow:hidden}
     max-height:none;overflow-x:hidden;overflow-y:auto;
     padding:12px 14px;font-size:15px;
   }
-  #plist::before{content:"PLAYERS";display:block;margin-bottom:8px;letter-spacing:1px;font-weight:700;color:var(--amber)}
-  #plist .pl{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid #333}
-  #plist .pl b{margin-left:auto}
+  #plist{display:block}
+  #plist::before{display:block;margin-bottom:8px}
+  #plist .pl{margin-bottom:8px}
   /* right: chat, reply bar, message box */
   #chat{grid-column:3;grid-row:1 / 3;min-height:0}
   #rbar{grid-column:3;grid-row:3}
@@ -230,8 +267,58 @@ body{overflow:hidden}
 .pal{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding-bottom:4px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
 
 /* ---- settings / modal / themes ---- */
-#menu{position:relative}
-#gear{position:absolute;top:calc(10px + env(safe-area-inset-top));left:14px;background:none;border:0;color:var(--amber);padding:8px;font-size:14px}
+/* ---- main menu ---- */
+#menu{position:relative;justify-content:center;gap:0;
+  background:radial-gradient(70% 38% at 50% 24%,color-mix(in srgb,var(--amber) 20%,transparent),transparent 72%)}
+#menu>#mhero,#menu>#mctl{position:relative;z-index:1;display:flex;flex-direction:column;gap:14px}
+#mhero{align-items:center;margin-bottom:26px}
+#mctl{width:100%}
+#mbg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+#mbg i{position:absolute;font-style:normal;opacity:.06;filter:blur(2.5px);font-size:34px;animation:mfloat 9s ease-in-out infinite}
+#mbg i:nth-child(1){left:7%;top:12%}
+#mbg i:nth-child(2){right:9%;top:30%;animation-duration:11s;animation-delay:-3s;font-size:42px}
+#mbg i:nth-child(3){left:12%;top:58%;animation-duration:10s;animation-delay:-5s}
+#mbg i:nth-child(4){right:14%;top:72%;animation-duration:12s;animation-delay:-2s;font-size:38px}
+#mbg i:nth-child(5){left:42%;top:88%;animation-duration:8s;animation-delay:-6s;font-size:28px}
+#mbg i:nth-child(6){right:36%;top:6%;animation-duration:13s;animation-delay:-8s;font-size:26px}
+@keyframes mfloat{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-18px) rotate(8deg)}}
+#logo{text-align:center;line-height:1}
+#logo .l1{display:block;font-size:18px;font-weight:600;letter-spacing:7px;color:#ddd;text-indent:7px}
+#logo .l2{display:block;font-size:54px;font-weight:900;letter-spacing:1px;color:var(--amber);margin-top:4px;transform:rotate(-2deg);
+  text-shadow:0 0 28px color-mix(in srgb,var(--amber) 45%,transparent),0 3px 0 color-mix(in srgb,var(--amber) 35%,#000)}
+#logo svg{display:block;width:210px;height:16px;margin:6px auto 0;overflow:visible}
+#logo path{fill:none;stroke:var(--amber);stroke-width:4;stroke-linecap:round;stroke-dasharray:320;stroke-dashoffset:320;animation:mdraw 1.1s .25s ease-out forwards}
+@keyframes mdraw{to{stroke-dashoffset:0}}
+#logo .pen{position:absolute;font-size:22px;opacity:0;animation:mpen .4s 1.2s forwards}
+@keyframes mpen{to{opacity:1}}
+#mhero .tag{margin:0;color:#aaa;letter-spacing:2px;font-size:14px}
+#pcard{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid #333;border-radius:18px;padding:10px 12px}
+#pav{flex:none;width:54px;height:54px;padding:0;border-radius:50%;font-size:28px;background:#2a2a2a;border:2px solid var(--amber);display:grid;place-items:center}
+#pcard .pin{flex:1;min-width:0}
+#pcard input{background:transparent;border:0;border-bottom:1px solid #555;border-radius:0;padding:4px 0;font-size:18px;font-weight:700}
+#pcard input:focus{outline:0;border-bottom-color:var(--amber)}
+#pstat{font-size:12px;margin-top:4px}#pstat:empty{display:none}
+#menu #play{padding:18px;font-size:20px;letter-spacing:3px;border-radius:18px;
+  background:linear-gradient(135deg,var(--amber),color-mix(in srgb,var(--amber) 60%,#ff5722));
+  box-shadow:0 6px 22px color-mix(in srgb,var(--amber) 40%,transparent);animation:mpulse 2.6s ease-in-out infinite}
+@keyframes mpulse{0%,100%{box-shadow:0 6px 22px color-mix(in srgb,var(--amber) 35%,transparent)}50%{box-shadow:0 6px 34px color-mix(in srgb,var(--amber) 65%,transparent)}}
+#menu .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#menu .two button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 8px;border-radius:16px;background:var(--panel);border:1px solid #3a3a3a;font-size:14px;letter-spacing:1px}
+#menu .two button span{font-size:24px}
+#menu button:active{transform:scale(.96)}
+#menu button{transition:transform .12s}
+#mfoot{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:2px}
+#machv{background:var(--panel);border:1px solid #333;color:#ddd;border-radius:20px;padding:7px 14px;font-size:13px}
+#mtip{font-size:12px;color:#888;text-align:center;min-height:16px}
+#gear{position:absolute;z-index:2;top:calc(10px + env(safe-area-inset-top));right:14px;width:42px;height:42px;padding:0;border-radius:50%;
+  background:var(--panel);border:1px solid #3a3a3a;color:var(--amber);font-size:20px;display:grid;place-items:center}
+@media (prefers-reduced-motion:reduce){#mbg i,#menu #play{animation:none}#logo path{animation:none;stroke-dashoffset:0}#logo .pen{animation:none;opacity:1}}
+/* desktop: logo on the left, controls on the right (menu only) */
+@media (min-width:900px) and (min-height:480px) and (orientation:landscape){
+  #menu{max-width:900px;flex-direction:row;align-items:center;justify-content:center;gap:56px}
+  #mhero{flex:1;margin:0}#mctl{flex:none;width:380px}
+  #logo .l2{font-size:72px}#logo .l1{font-size:22px}#logo svg{width:280px}
+}
 .sr{display:flex;align-items:center;gap:8px;background:var(--panel);border-radius:14px;padding:14px 16px;cursor:pointer}
 .sr .si{width:32px;font-size:22px}.sr .st{flex:1;font-size:17px}
 #modal{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:20;padding:16px}
@@ -253,15 +340,22 @@ body{overflow:hidden}
 </style></head><body>
 <div id="ban">Connecting to server…</div>
 
-<div id="menu" class="s on" style="justify-content:center">
- <button id="gear">⚙ SETTINGS</button>
- <h1>GUESS THE<b class="am">DRAWING</b></h1>
- <p class="gr" style="text-align:center;margin:0">Draw • Guess • Win</p>
- <input id="name" maxlength="20" placeholder="Your name" autocomplete="off">
- <button id="play">PLAY</button>
- <button id="create" class="o">CREATE ROOM</button>
- <button id="jopen" class="o">JOIN ROOM</button>
- <div class="err" id="merr"></div>
+<div id="menu" class="s on">
+ <div id="mbg"><i>🎨</i><i>✏️</i><i>🥚</i><i>🍅</i><i>⭐</i><i>🖌️</i></div>
+ <button id="gear" aria-label="Settings">⚙</button>
+ <div id="mhero">
+  <div id="logo"><span class="l1">GUESS THE</span><b class="l2">DRAWING</b>
+   <svg viewBox="0 0 210 16"><path d="M4 9 Q 22 -1 40 9 T 76 9 T 112 9 T 148 9 T 184 9"/></svg></div>
+  <p class="tag">DRAW • GUESS • WIN</p>
+ </div>
+ <div id="mctl">
+  <div id="pcard"><button id="pav" aria-label="Choose avatar">🙂</button>
+   <div class="pin"><input id="name" maxlength="20" placeholder="Your name" autocomplete="off"><div id="pstat" class="gr"></div></div></div>
+  <button id="play">PLAY</button>
+  <div class="two"><button id="create" class="o"><span>➕</span>CREATE ROOM</button><button id="jopen" class="o"><span>🔑</span>JOIN ROOM</button></div>
+  <div class="err" id="merr"></div>
+  <div id="mfoot"><button id="machv" class="o"></button><div id="mtip"></div></div>
+ </div>
 </div>
 
 <div id="joinscr" class="s" style="justify-content:center">
@@ -274,27 +368,29 @@ body{overflow:hidden}
 </div>
 
 <div id="lobby" class="s">
- <div id="lhead" style="text-align:center"><span class="gr">ROOM CODE</span><br>
-  <b id="rcode" class="am" style="font-size:28px;letter-spacing:4px;cursor:pointer;padding:2px 10px;display:inline-block"></b><br>
-  <span id="chint" class="gr" style="font-size:11px">Tap to copy</span></div>
+ <div id="lhead"><span class="lt">ROOM CODE</span>
+  <b id="rcode" class="am" title="Tap to copy"></b>
+  <span id="chint" class="gr" style="font-size:11px">Tap code to copy</span>
+  <div class="lrow"><span class="bdg" id="lpub"></span><span class="bdg" id="lcnt"></span><button id="lshare" class="o">🔗 Share invite</button></div></div>
  <div class="card" id="plist"></div>
  <div class="card grow" id="chat"></div>
  <div id="rbar" class="card" style="display:none;align-items:center;gap:8px"><div style="flex:1;min-width:0"><b class="am" id="rn" style="font-size:12px"></b><div id="rq2" class="gr" style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div></div><button id="rx" class="o" style="padding:6px 12px">✕</button></div>
  <input id="msg" maxlength="200" placeholder="Message" enterkeyhint="send" autocomplete="off">
  <div id="host" style="display:none;flex-direction:column;gap:6px">
-  <div class="row">
-   <select id="rounds"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
-   <select id="rtime"><option>30</option><option>45</option><option selected>60</option><option>90</option><option>120</option></select>
-   <select id="choices"><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
+  <div class="flds">
+   <label class="fld">ROUNDS<select id="rounds"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+   <label class="fld">SECONDS<select id="rtime"><option>30</option><option>45</option><option selected>60</option><option>90</option><option>120</option></select></label>
+   <label class="fld">WORD CHOICES<select id="choices"><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label>
   </div>
-  <div class="gr" style="font-size:12px;text-align:center">rounds · seconds per round · words to pick from</div>
-  <textarea id="custom" rows="2" placeholder="Custom words (comma separated)"></textarea>
-  <label class="row gr"><input type="checkbox" id="conly" style="flex:none;width:auto"> <span>Use only my words</span></label>
+  <details id="cw"><summary>✏️ Custom words</summary>
+   <textarea id="custom" rows="2" placeholder="Custom words (comma separated)"></textarea>
+   <label class="row gr"><input type="checkbox" id="conly" style="flex:none;width:auto"> <span>Use only my words</span></label>
+  </details>
   <div class="err" id="lerr"></div>
   <button id="start">START GAME</button>
  </div>
- <div id="wait" class="gr" style="text-align:center">Waiting for the host to start…</div>
- <button id="leave" class="o">Leave room</button>
+ <div id="wait" class="gr" style="text-align:center">⏳ Waiting for the host to start…</div>
+ <button id="leave" class="o">← Leave room</button>
 </div>
 
 <div id="game" class="s">
@@ -445,7 +541,7 @@ function closeModal(){ $('modal').classList.remove('on'); }
 $('mx').onclick=closeModal; $('modal').onclick=e=>{ if(e.target.id==='modal') closeModal(); };
 
 function openAvatar(){ modal('Choose your avatar','<div class="av">'+AVATARS.map(a=>`<span data-a="${a}" class="${a===S.avatar?'sel':''}">${a}</span>`).join('')+'</div>',
-  e=>{ const a=e.target.dataset.a; if(!a)return; S.avatar=localStorage.avatar=a; closeModal(); renderSettings(); }); }
+  e=>{ const a=e.target.dataset.a; if(!a)return; S.avatar=localStorage.avatar=a; closeModal(); renderSettings(); renderMenu(); }); }
 function openName(){ modal('Change name','<input id="nn" maxlength="20" placeholder="Your name" autocomplete="off" value="'+esc(localStorage.name||'')+'"><div class="gr" style="font-size:12px">Used the next time you join a room.</div><button id="nsave">SAVE</button>',
   e=>{ if(e.target.id!=='nsave')return; const v=$('nn').value.trim(); if(!v)return; localStorage.name=v; $('name').value=$('name2').value=v; closeModal(); renderSettings(); });
   setTimeout(()=>{ const i=$('nn'); if(i){ i.focus(); i.select(); } },50); }
@@ -477,7 +573,7 @@ checkAch();
 
 // ---------- screens ----------
 function show(id){ S.phase=id; document.querySelectorAll('.s').forEach(e=>e.classList.toggle('on',e.id===id));
-  if(id==='game') requestAnimationFrame(fit); if(id==='menu') checkAch(); }
+  if(id==='game') requestAnimationFrame(fit); if(id==='menu'){ renderMenu(); checkAch(); } }
 const me = () => S.players.find(p=>p.id===pid);
 const nameOf = id => (S.players.find(p=>p.id===id)||{}).name || '?';
 
@@ -577,6 +673,15 @@ socket.on('game_finished', d => {
 });
 
 // ---------- menu ----------
+const TIPS=['Hold the egg button to switch its skin','Swipe a chat message right to reply to it','Win games to unlock new themes and egg skins','Taunts: one per drawing, so make it count','Tap a player in the lobby to kick them or make them host','Drawers can mute taunts with the 🔔 button'];
+function renderMenu(){ $('pav').textContent=S.avatar;
+  $('pstat').textContent = ST.get('played') ? `${ST.get('played')} games · ${ST.get('won')} wins · ${ST.get('correct')} correct guesses` : '';
+  $('machv').textContent = `🏆 ${achDone()}/${ACH.length} achievements`;
+  $('mtip').textContent = '💡 ' + TIPS[Math.floor(Math.random()*TIPS.length)]; }
+$('pav').onclick = () => openAvatar();
+$('machv').onclick = () => openAch();
+$('menu').addEventListener('click', e => { if(e.target.closest('button') && navigator.vibrate) navigator.vibrate(12); });
+renderMenu();
 $('name').value = $('name2').value = localStorage.name || '';
 const q = new URLSearchParams(location.search).get('room'); if(q){ $('code').value=q.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6); show('joinscr'); }
 $('code').oninput = e => e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
@@ -591,11 +696,17 @@ $('join').onclick = () => { const c=$('code').value.trim(); if(c.length!==6){ $(
 
 // ---------- lobby ----------
 function drawLobby(){
-  $('rcode').textContent=S.room; const m=me(), host=!!(m&&m.isHost);
-  $('plist').innerHTML=S.players.slice().sort((a,b)=>(b.wins||0)-(a.wins||0)).map(p=>`<div class="pl" data-id="${p.id}">${esc(p.avatar||'🙂')} <span style="color:${p.connected?'#fff':'#777'}">${esc(p.name)}${p.connected?'':' (reconnecting…)'}</span> <b style="font-size:13px;color:${p.wins>0?'var(--amber)':'#777'}">🏆 ${p.wins||0}</b>${p.isHost?' <b class="am" style="float:right;font-size:11px">HOST</b>':''}</div>`).join('');
+  $('rcode').innerHTML=[...S.room].map(c=>`<i>${esc(c)}</i>`).join(''); const m=me(), host=!!(m&&m.isHost);
+  $('lpub').textContent = S.pub ? '🌐 Public room' : '🔒 Private room';
+  $('lcnt').textContent = `👥 ${S.players.length}/8`;
+  const cards=S.players.slice().sort((a,b)=>(b.wins||0)-(a.wins||0)).map(p=>`<div class="pl${p.connected?'':' off'}" data-id="${p.id}"><span class="pav">${esc(p.avatar||'🙂')}</span><div class="pn"><div class="r1"><span class="nm">${esc(p.name)}</span><span class="wn" style="color:${p.wins>0?'var(--amber)':'#777'}">🏆 ${p.wins||0}</span></div><div class="sub">${p.isHost?'<span class="am">👑 HOST</span>':''}${p.connected?'':(p.isHost?' · ':'')+'reconnecting…'}</div></div></div>`).join('');
+  $('plist').dataset.n = `${S.players.length}/8`;
+  $('plist').innerHTML = cards + (S.players.length<8 ? '<div class="pl empty">➕ Invite a friend</div>' : '');
   $('host').style.display=host?'flex':'none'; $('wait').style.display=host?'none':'block';
-  $('start').disabled = S.players.filter(p=>p.connected).length<2; }
-$('plist').onclick = e => { const el=e.target.closest('.pl'); const m=me(); if(!el||!m||!m.isHost||el.dataset.id===pid)return;
+  const on=S.players.filter(p=>p.connected).length;
+  $('start').disabled = on<2; $('start').textContent = on<2 ? 'Need 1 more player to start' : 'START GAME'; }
+$('plist').onclick = e => { const el=e.target.closest('.pl'); if(el&&el.classList.contains('empty')){ $('lshare').click(); return; }
+  const m=me(); if(!el||!m||!m.isHost||!el.dataset.id||el.dataset.id===pid)return;
   const id=el.dataset.id, n=nameOf(id);
   if(S.pub){ if(confirm(`Kick ${n}?`)) socket.emit('kick_player',{playerId:id}); return; }
   if(confirm(`Make ${n} the host?\n(Cancel for the kick option)`)) socket.emit('transfer_host',{playerId:id}); else if(confirm(`Kick ${n}?`)) socket.emit('kick_player',{playerId:id}); };
@@ -642,7 +753,11 @@ $('msg').onkeydown = e => { if(e.key!=='Enter')return; let t=e.target.value.trim
   socket.emit('lobby_chat',{message:t}); e.target.value=''; setReply(null); };
 $('rcode').onclick = async () => { const c=S.room; if(!c)return;
   try{ await navigator.clipboard.writeText(c); }catch(e){ const t=document.createElement('textarea'); t.value=c; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); }catch(_){} t.remove(); }
-  const h=$('chint'); h.textContent='Room code copied ✓'; setTimeout(()=>{ h.textContent='Tap to copy'; },1500); };
+  const h=$('chint'); h.textContent='Room code copied ✓'; setTimeout(()=>{ h.textContent='Tap code to copy'; },1500); };
+$('lshare').onclick = async () => { const c=S.room; if(!c)return; const url=location.origin+location.pathname+'?room='+c;
+  try{ if(navigator.share){ await navigator.share({title:'Guess The Drawing',text:'Join my Guess The Drawing room: '+c,url}); return; } }catch(e){ if(e&&e.name==='AbortError')return; }
+  try{ await navigator.clipboard.writeText(url); }catch(e){ const t=document.createElement('textarea'); t.value=url; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); }catch(_){} t.remove(); }
+  const h=$('chint'); h.textContent='Invite link copied ✓'; setTimeout(()=>{ h.textContent='Tap code to copy'; },1800); };
 $('start').onclick = () => { $('lerr').textContent='';
   socket.emit('start_game',{rounds:+$('rounds').value, roundTime:+$('rtime').value, choiceCount:+$('choices').value,
     customWords:$('custom').value.split(/[,\n]/).map(s=>s.trim()).filter(Boolean), customOnly:$('conly').checked}, r=>{ if(r&&!r.success) $('lerr').textContent=r.message; }); };
